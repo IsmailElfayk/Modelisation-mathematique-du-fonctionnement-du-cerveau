@@ -1,0 +1,214 @@
+\chapter{\textcolor{gray}{Analyse numérique et simulations}}
+\section{Rappel de la Méthode d'Euler\cite{siciliano2012hodgkin}}
+		\textbf{Problème général}\\
+		Une EDO du premier ordre s'écrit sous la forme :
+		\[
+		\frac{dy}{dt} = f(t, y), \quad y(t_0) = y_0
+		\]
+		On cherche à approximer la solution $y(t)$ sur un intervalle de temps à l'aide d'un pas $\Delta t$.
+		\vspace{0.5cm}
+		\textbf{Formule d'Euler (mise à jour à chaque pas)}
+		\[
+		y_{n+1} = y_n + \Delta t \cdot f(t_n, y_n)
+		\]
+		où :
+		\begin{itemize}
+			\item $y_n$ est l'approximation de $y(t_n)$,
+			\item $t_n = t_0 + n\Delta t$
+		\end{itemize}
+\section{Construction du problème}
+	\textbf{Modèle de Hodgkin-Huxley} \\
+		\begin{align*}
+			\frac{dv}{dt} &= \frac{1}{C_m} \left[ I - \bar{G}_{Na} m^3 h (v - E_{Na}) - \bar{G}_K n^4 (v - E_K) - \bar{G}_l (v - E_l) \right] \\
+			\frac{dn}{dt} &= \alpha_n(v)(1 - n) - \beta_n(v)n \\
+			\frac{dm}{dt} &= \alpha_m(v)(1 - m) - \beta_m(v)m \\
+			\frac{dh}{dt} &= \alpha_h(v)(1 - h) - \beta_h(v)h
+		\end{align*}
+		
+		\noindent \textbf{Avec :}
+		\begin{align*}
+			\alpha_n(v) &= \frac{0.01(v + 50)}{1 - \exp\left( \frac{-(v + 50)}{10} \right)} 
+			&\beta_n(v) &= 0.125 \exp\left( \frac{-(v + 60)}{80} \right) \\
+			\alpha_m(v) &= \frac{0.1(v + 35)}{1 - \exp\left( \frac{-(v + 35)}{10} \right)} 
+			&\beta_m(v) &= 4.0 \exp\left( -0.0556(v + 60) \right) \\
+			\alpha_h(v) &= 0.07 \exp\left( -0.05(v + 60) \right)
+			&\beta_h(v) &= \frac{1}{1 + \exp(-0.1(v + 30))}
+		\end{align*}
+		\vspace{0.5em}
+		\noindent \textbf{Constantes :}
+		\begin{align*}
+			C_m &= 0.01 \, \mu\text{F/cm}^2 \\
+			E_{Na} &= 55.17 \, \text{mV}, \quad
+			E_K = -72.14 \, \text{mV}, \quad
+			E_l = -49.42 \, \text{mV} \\
+			\bar{G}_{Na} &= 1.2 \, \text{mS/cm}^2, \quad
+			\bar{G}_K = 0.36 \, \text{mS/cm}^2, \quad
+			\bar{G}_l = 0.003 \, \text{mS/cm}^2
+		\end{align*}
+	
+\section{Implémentation}
+\subsection{L'algorithme}
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.45\textwidth}
+		\begin{itemize}
+			\item \textbf{Démarrer}
+			\item[] \vspace{0.5em}
+			\item \textbf{Initialisation}
+			\item[] \vspace{0.5em}
+			\item \textbf{Boucle : $i = 1$ à $N-1$}
+			\item[] \vspace{0.5em}
+			\item \textbf{Appel fonction HH}
+			\item[] \vspace{0.5em}
+			\item \textbf{Mise à jour}
+			\item[] \vspace{0.5em}
+			\item \textbf{Décision : $i < N-1$}
+			\item[] \vspace{0.5em}
+			\item \textbf{Tracer les courbes}
+			\item[] \vspace{0.5em}
+			\item \textbf{Fin}
+		\end{itemize}
+	\end{minipage}%
+	\hfill
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[scale=0.3]{pictures/schema.png}
+	\end{minipage}
+	\caption{Schéma de l'algorithme avec le modèle Hodgkin-Huxley}
+	\label{fig:schema_hh}
+\end{figure}
+\subsection{Les fonctions}
+		\begin{center}
+			\begin{minipage}{0.49\textwidth}
+				\begin{lstlisting}
+				% Fonctions des variables de porte 
+				function a = am(V)
+				a = 0.1 * (V + 35) / (1 - exp(-(V + 35) / 10));
+				end
+				function b = bm(V)
+				b = 4.0 * exp(-0.0556 * (V + 60));
+				end
+				function a = an(V)
+				a = 0.01 * (V + 50) / (1 - exp(-(V + 50) / 10));
+				end
+				\end{lstlisting}
+			\end{minipage}%
+			\hfill
+			\begin{minipage}{0.49\textwidth}
+				\begin{lstlisting}
+				function b = bn(V)
+				b = 0.125 * exp(-(V + 60) / 80);
+				end
+				function a = ah(V)
+				a = 0.07 * exp(-0.05 * (V + 60));
+				end
+				function b = bh(V)
+				b = 1 / (1 + exp(-0.1 * (V + 30)));
+				end
+				\end{lstlisting}
+			\end{minipage}
+		\end{center}
+\subsection{La Fonction HH}
+	\begin{center}
+		\begin{minipage}{0.49\textwidth}
+			\begin{lstlisting}
+			% Fonctions utilisees
+			function dydt = HH(t, y)
+			% Constantes
+			ENa = 55.17;    % mV
+			EK = -72.14;    % mV
+			El = -49.42;    % mV
+			gbarNa = 1.2;   % mS/cm^2
+			gbarK = 0.36;   % mS/cm^2
+			gbarl = 0.003;  % mS/cm^2
+			Cm = 0.01;      % uF/cm^2
+			I = 0.1;        % uA/cm^2
+			% Variables d'etat
+			V = y(1);
+			n = y(2);
+			m = y(3);
+			h = y(4);
+			% Conductances ioniques
+			gNa = gbarNa * m^3 * h;
+			gK = gbarK * n^4;
+			gl = gbarl;
+			\end{lstlisting}
+		\end{minipage}%
+		\hfill
+		\begin{minipage}{0.49\textwidth}
+			\begin{lstlisting}
+			% Courants ioniques
+			INa = gNa * (V - ENa);
+			IK = gK * (V - EK);
+			Il = gl * (V - El);
+			% Equations differentielles
+			dVdt = (1 / Cm) * (I - INa - IK - Il);
+			dndt = an(V)*(1 - n) - bn(V)*n;
+			dmdt = am(V)*(1 - m) - bm(V)*m;
+			dhdt = ah(V)*(1 - h) - bh(V)*h;
+			dydt = [dVdt; dndt; dmdt; dhdt];
+			end
+			\end{lstlisting}
+		\end{minipage}
+	\end{center}
+\subsection{Script}
+		\begin{center}
+			\begin{minipage}{0.49\textwidth}
+				\begin{lstlisting}
+				% Script principal 
+				T = 30;
+				pas = 0.0001;
+				H = 0:pas:T;
+				y0 = [-65, 0.3177, 0.0529, 0.5961]'; % Conditions initiales
+				Y = [y0 zeros(4,length(H)-1)];
+				for i = 1:length(H)-1
+				Y(:,i+1) = Y(:,i) + pas * HH(H(i), Y(:,i));
+				end
+				subplot(1,2,1)
+				plot(H, Y(1,:));
+				xlabel('Temps (ms)');
+				ylabel('V (mV)');
+				title('Potentiel membranaire');
+				grid on;
+				\end{lstlisting}
+			\end{minipage}%
+			\hfill
+			\begin{minipage}{0.49\textwidth}
+				\begin{lstlisting}
+				subplot(1,2,2)
+				hold on
+				a2=Y(2,:);
+				a3=Y(3,:);
+				a4=Y(4,:);
+				z = T/(pas*6);
+				plot(H(1:z), a2(1:z), 'r', 'DisplayName', 'n');
+				plot(H(1:z), a3(1:z), 'g', 'DisplayName', 'm');
+				plot(H(1:z), a4(1:z), 'b', 'DisplayName', 'h');
+				xlabel('Temps (ms)');
+				ylabel('Variables de porte');
+				title('n, m, h dans le modele de HH');
+				legend show
+				grid on;
+				hold off
+				\end{lstlisting}
+			\end{minipage}
+		\end{center}
+\section{Résultats}
+	\subsection{La solution obtenue avec la méthode d'Euler}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{pictures/simulation.png}
+		\caption{La solution obtenue avec la méthode d'Euler}
+	\end{figure}
+\textbf{\textit{Interprétation du graphe I :}}
+Le graphique de gauche représente l'évolution du potentiel membranaire d'un neurone selon le modèle de Hodgkin-Huxley. On y observe deux potentiels d'action successifs, caractérisés par des pics d'activité électrique. Le potentiel débute à environ -65 mV, correspondant à l'état de repos de la membrane, puis monte rapidement vers +45 mV lors de la phase de dépolarisation. Ensuite, il chute en dessous du potentiel de repos (hyperpolarisation) avant de revenir à l'état initial. Chaque pic traduit une réponse du neurone à une stimulation suffisante, déclenchant un influx nerveux. Ce comportement résulte de l'activation coordonnée des canaux ioniques, et reflète précisément la dynamique électrique neuronale modélisée par les équations de Hodgkin-Huxley.\\
+\textbf{\textit{Interprétation du graphe II :}}
+Le graphique de droite illustre l'évolution des variables de porte \( m \), \( h \) et \( n \) dans le modèle de Hodgkin-Huxley, qui décrivent respectivement l'activation et l'inactivation des canaux sodiques, ainsi que l'activation des canaux potassiques. La variable \( m \) (courbe verte) augmente très rapidement dès le début de la stimulation, traduisant l'ouverture rapide des canaux sodium, ce qui permet l'entrée massive de $Na^{+}$ dans la cellule et provoque la dépolarisation de la membrane. Parallèlement, la variable \( h \) (courbe bleue) diminue progressivement, représentant l'inactivation des canaux sodium, processus qui contribue à l'arrêt du flux de $Na^{+}$ et à la fin du potentiel d'action. Quant à la variable \( n \) (courbe rouge), elle augmente plus lentement, reflétant l'ouverture progressive des canaux potassium, permettant la sortie de $K^{+}$ et participant ainsi à la repolarisation de la membrane, puis à l'hyperpolarisation. L'évolution de ces trois variables rend compte avec précision de la régulation ionique à l'origine du potentiel d'action neuronal.
+
+\subsection{La solution avec différentes Méthodes}
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=\linewidth]{pictures/sumi-diff.png}
+	\caption{Comparaison entre différentes méthodes numériques}
+\end{figure}
+

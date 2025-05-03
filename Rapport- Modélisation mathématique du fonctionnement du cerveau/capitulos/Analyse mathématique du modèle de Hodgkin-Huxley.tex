@@ -1,0 +1,190 @@
+\chapter{\textcolor{gray}{Analyse mathématique du modèle de Hodgkin-Huxley}}
+
+\section{Plan de la démonstration \cite{brady2000hodgkin} \cite{dayan2001theoretical} \cite{coddington1955theory}}
+	L'objectif de ce chapitre est l'analyse mathématique du modèle de Hodgkin-Huxley, qui est sous forme d'un système d'équations différentielles ordinaires (EDO) non linéaires. 
+	Cela repose principalement sur le théorème de Cauchy-Lipschitz, aussi appelé théorème de Picard-Lindelöf. Nous utilisons ici la version locale du théorème, qui s'énonce comme suit :
+\begin{theorem}{Théorème}[de Cauchy-Lipschitz :]
+		Soit $X(x,t)$ une fonction continue et localement lipschitzienne dans un ouvert $R \subseteq \mathbb{R}^n \times \mathbb{R}$. Alors, pour tout point $(x_0, t_0) \in R$, il existe une unique solution $x(t)$ du système différentiel
+		\[
+		\frac{dx}{dt} = X(x,t)
+		\]
+		telle que $x(t_0) = x_0$, et définie sur un intervalle $[t_0, b]$ (appelé intervalle d'existence maximal à droite) avec $b \leq \infty$, tel que si $b < \infty$ :
+		\begin{itemize}
+			\item[-] soit la solution devient \textbf{non bornée} quand $t \rightarrow b$ (c'est-à-dire $\lim_{t \to b^-} |x(t)| = \infty$), 
+			\item[-] soit \textbf{proche de la frontière du domaine $R$} où $X(x,t)$ est définie.
+		\end{itemize}
+\end{theorem}
+	
+	Une fois l'existence et l'unicité établies localement (près du point initial), l'étude cherche à prolonger la solution sur un intervalle plus large. Ce prolongement est possible tant que la solution reste dans le domaine défini par le théorème. Deux cas sont possibles : soit la solution existe pour tout temps $t \geq 0$, soit elle cesse dexister à un instant $b$ si elle quitte ce domaine. Pour résoudre ce dilemme, l'objectif est ensuite de prouver que les solutions restent \textbf{bornées}, ce qui garantit leur existence pour tout $t \geq 0$.
+	
+	On notera notre système par
+	\begin{equation}
+	\frac{dx}{dt}=H(x)
+	\label{eq:20}
+	\end{equation}
+	avec $H=(H_1, H_2, H_3,H_4)$, et $x=(v,n,m,h)$
+
+	où
+	\[
+	H_1(v, n, m, h) = \frac{1}{C_m}(-\bar{G}_{\text{Na}} m^3 h (v - E_{\text{Na}}) - \bar{G}_{\text{K}} n^4 (v - E_{\text{K}}) - G_{\text{L}} (v - E_{\text{L}}) + I_{\text{ext}})
+	\]
+	\[
+	H_2(v, n, m, h) = \alpha_n(v)(1 - n) - \beta_n(v)n
+	\]
+	\[
+	H_3(v, n, m, h) = \alpha_m(v)(1 - m) - \beta_m(v)m
+	\]
+	\[
+	H_4(v, n, m, h) = \alpha_h(v)(1 - h) - \beta_h(v)h
+	\]
+
+	Nous allons montrer que $H_1, H_2, H_3, H_4$ sont des fonctions entières des quatre variables réelles $v, n, m, h$, ce qui impliquera qu'elles sont à la fois continues et localement lipschitziennes.
+	
+\subsection*{Rappel : Fonction Analytique, Fonction Entière}
+	\begin{definition}
+	Soit $f : \Omega \to \mathbb{C}$ une fonction et $z_0 \in \Omega$.
+		\begin{enumerate}
+			\item On dit que $f$ est développable en série entière au voisinage de $z_0$ s'il existe :
+			\begin{itemize}
+				\item un nombre réel $r > 0$ tel que $D(z_0, r) \subset \Omega$;
+				\item une série entière $\sum_{n=0}^{+\infty} a_n z^n$ de rayon de convergence $R > r$ telle que :
+				\[
+				\forall z \in D(z_0, r), \quad f(z) = \sum_{n=0}^{+\infty} a_n (z - z_0)^n.
+				\]
+			\end{itemize}
+			\item On dit que $f$ est \textbf{analytique} dans $\Omega$ si elle est développable en série entière au voisinage de tout point de $\Omega$.
+			\item Si $\Omega=\mathbb{C}$, on dit que $f$ est une fonction \textbf{entière}.
+		\end{enumerate}
+	\end{definition}
+
+	\begin{proposition}
+		\textit{Les fonctions $\alpha_n, \alpha_m, \alpha_h, \beta_n, \beta_m, \beta_h$ sont des fonctions entières de $v$.}    
+	\end{proposition}
+	
+	\textbf{Preuve}
+	
+	Posons :
+	\[
+	f(x) = 
+	\begin{cases}
+	\frac{x}{-1 + \exp(x)} & \text{si } x \neq 0, \\
+	1 & \text{si } x = 0.
+	\end{cases}
+	\]
+	
+	Pour $x \neq 0$, comme $f$ est le quotient de deux fonctions entières et que le dénominateur est non nul, on a que $f$ est analytique pour tout réel $x \neq 0$.
+	
+	Il est bien connu qu'il existe un voisinage de zéro tel que $f$ est représentée par une série entière en $x$. 
+
+	En effet, les coefficients $B_n$ de la série entière représentant $f$, 
+	\[
+	f(x) = \sum_{n=0}^{\infty} B_n \frac{x^n}{n!},
+	\]
+	sont les nombres de Bernoulli. 
+	Les $B_n = f^{(n)}(0)$ vérifient :
+	\[
+	B_0 = 1, \quad B_1 = -\frac{1}{2}, \quad B_2 = \frac{1}{6}, \quad \sum_{k=0}^{n-1} \binom{n}{k} B_k = 0 \quad \text{si } n = 2,3,\ldots
+	\]
+	\[
+	B_{2n+1} = 0 \quad \text{si } n = 1, 2, 3, 4, \ldots
+	\]
+
+	Une preuve directe que $f$ est analytique en zéro découle du fait que la fonction $g$ suivante est développable en série entière : 
+	\[
+	g(x) = \frac{-1 + \exp(x)}{x} = 1 + \sum_{n=1}^{\infty} \frac{x^n}{(n+1)!}
+	\]
+	
+	et qui est absolument convergente pour tout réel $x$.
+	
+	Cette propriété est établie à l'aide du théorème suivant :
+	
+	\textit{\textbf{Théorème} Si $p(z) = \sum_{n=0}^{\infty} p_n z^n$ pour $z \in \mathcal{V}(0)$, et si $p(0) \neq 0$, alors il existe un voisinage $U$ de 0 dans lequel l'inverse de $p$ a un développement en série entière de la forme :
+		\[
+		\frac{1}{p(z)} = \sum_{n=0}^{\infty} q_n z^n
+		\]
+		\quad \text{où} \quad $q_0 = \frac{1}{p_0}$.
+	}
+	
+	(Dans notre cas, $p = g$, $1/p = f$.) Ainsi, $f$ est analytique pour tout réel $x$.
+
+	Définissons maintenant :
+	\[
+	g_1(v) = \frac{v + 10}{10}, \quad g_2(v) = \frac{v + 25}{10}
+	\]
+	
+	Comme $g_1$ et $g_2$ sont analytiques pour tout réel $v$, il en est de même pour les compositions :
+	\[
+	\hat{\alpha}_n = f \circ g_1, \quad \hat{\alpha}_m = f \circ g_2
+	\]
+	Et donc.
+	\[
+	\alpha_n = \frac{1}{10} \hat{\alpha}_n
+	\]
+	est analytique pour tout réel $v$.
+
+	Puisque :
+	\[
+	1 + \exp\left(\frac{v + 30}{10}\right)
+	\]
+	est analytique pour tout réel $v$ et n'est jamais nul, le réciproque $\beta_h$ est analytique pour tout réel $v$.
+	
+	Enfin, comme les fonctions exponentielles sont analytiques pour tout réel $v$, on a que $\beta_n, \beta_m, \alpha_h$ sont analytiques pour tout réel $v$. Ceci achève la démonstration. $\blacksquare$
+	
+	\begin{itemize}
+		\item[$\to$] Il s'ensuit immédiatement que $H_2, H_3$ et $H_4$ 
+		sont des fonctions entières des quatre variables $v, n, m, h$.
+		\item La fonction $H_1$ est polynomiale en $v, n, m$ et $h$ et est donc une fonction \textbf{entière}.
+	\end{itemize}
+	On peut donc appliquer le théorème classique de Cauchy-Lipschitz sur le système \eqref{eq:20}.
+	
+\section{Théorème d'existence et d'unicité}
+	\begin{theorem}
+	Soit $I_0 > 0$ un réel donné. On définit :
+	\[
+	\omega = \min \left\{ -115, E_L -\frac{I_{\text{ext}}}{G_L} \right\}.
+	\]
+	Soit
+	\[
+	D = \left\{ (v, n, m, h) \mid \omega < v < 12, \ 0 < n < 1, \ 0 < m < 1, \ 0 < h < 1 \right\},
+	\]
+	et 
+	\[
+	D_t = \left\{ (t, v, n, m, h) \mid t \in \mathbb{R}, \ (v, n, m, h) \in D \right\}.
+	\]
+
+
+		\textbf{\textcolor{violet}{Théorème :}}
+		Soit $x_0 \in D$, soit $H=(H_1, H_2, H_3,H_4)$, et soit $x=(v,n,m,h)$. 
+		Alors, le système
+		\[
+		\frac{dx}{dt}=H(x)
+		\]
+		possède une solution unique $x(t)$, satisfaisant la condition initiale : $x(t_0) = x_0$, et est définie sur un intervalle de la forme $t_0 \leq t < b 
+		~(b \leq +\infty)$.
+		
+		De plus, si $b < \infty$, alors la solution $x(t)$ tend vers la frontière de $D$ lorsque $t$ tend vers $b$.
+	\end{theorem}
+
+	\textbf{Preuve.} Nous montrons que le système satisfait les hypothèses du Théorème de Cauchy-Lipschitz :
+	\begin{itemize}
+		\item $D_t$ est ouvert
+		\item $H$ est entière dans $D_t$ et est donc certainement bien définie et de classe $C^1$, en particulier continue et localement lipschitzienne dans $D_t$.
+	\end{itemize}
+	
+	Par conséquent, le système $\frac{dx}{dt} = H(x)$ possède une solution unique $x(t) = (v(t), n(t), m(t), h(t))$ satisfaisant $x(t_0) = x_0$ et définie sur un intervalle d'existence maximal à droite $[t_0, b[,~ b \leq \infty$. Si $b < \infty$, puisque $D$ est borné, $x(t)$ ne peut pas être non bornée lorsque $t \to b$. Par conséquent, soit $b = \infty$, soit $x(t)$ approche la frontière de $D$ lorsque $t \to b$. $\blacksquare$
+
+	\begin{boxR}
+		\textbf{\textcolor{red}{Remarque 1.}} Puisque $(v(0), n(0), m(0), h(0)) \in D$, nous avons l'existence et l'unicité de la solution du système \eqref{eq:13} à partir du temps $t_0 = 0$ jusqu'à ce que la solution approche la frontière de $D$.
+	\end{boxR}
+	
+	\begin{boxR}
+		\textbf{\textcolor{red}{Remarque 2.}} Si nous considérons $\bar{D}$, la fermeture de $D$, alors l'intervalle maximal d'existence à droite est soit $[t_0, \infty[$ soit $[t_0, b]$, si $b < \infty$, où $x(b) \in \partial D$ (la frontière de $D$). Par conséquent, lorsque nous prouvons que $\omega < v(t) < 12$, $0 < n(t) \leq 1$, $0 \leq m(t) \leq 1$, et $0 < h(t) \leq 1$ pour tout intervalle de temps où la solution existe, nous prouvons en même temps qu'une solution unique du système \eqref{eq:13} existe pour $t \in [0, a)$.
+	\end{boxR}
+
+	\begin{boxR}
+		\textbf{\textcolor{red}{Remarque 3.}} Puisque $H_1$, $H_2$, $H_3$ et $H_4$ sont des fonctions analytiques, la solution $(v(t), n(t), m(t), h(t))$ est composée de fonctions analytiques, selon la théorie des équations différentielles ordinaires.
+	\end{boxR}
+	
+	\begin{boxR}
+		\textbf{\textcolor{red}{Remarque 4.}} D'après la théorie des équations différentielles ordinaires, puisque $(0, n(0), m(0), h(0)) \in D_t$ (qui est ouvert), la solution $(v(t), n(t), m(t), h(t))$ du système \eqref{eq:20} peut être prolongée à gauche de la valeur initiale $(0, n(0), m(0), h(0))$. Par conséquent, les équations différentielles \eqref{eq:20} sont satisfaites à la valeur initiale.
+	\end{boxR}

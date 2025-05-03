@@ -1,0 +1,1070 @@
+\documentclass[10pt,french]{beamer}
+\usetheme{Darmstadt}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[numbers]{natbib}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\usepackage{babel}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage[many,skins]{tcolorbox}
+\usepackage{amssymb}
+
+\hypersetup{
+	urlcolor=blue,
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue
+}
+
+\definecolor{main}{HTML}{5989cf}
+\definecolor{sub}{HTML}{cde4ff}
+
+\newtcolorbox{boxH}{
+	colback = violet!10, 
+	colframe = violet, 
+	boxrule = 0pt, 
+	leftrule = 6pt
+}
+\newtcolorbox{boxR}{
+	colback = red!10, 
+	colframe = red!90!black, 
+	boxrule = 0pt, 
+	leftrule = 6pt
+}
+\newtcolorbox{boxG}{
+	colback = green!10, 
+	colframe = green!60!black, 
+	boxrule = 0pt, 
+	leftrule = 6pt
+}
+\newtcolorbox{boxO}{
+	colback = orange!10, 
+	colframe = orange, 
+	boxrule = 0pt, 
+	leftrule = 6pt
+}
+\AtBeginSection[]{ \begin{frame} \frametitle{Sommaire} \tableofcontents[currentsection,hideothersubsections] \end{frame} }
+\AtBeginSubsection[]{ \begin{frame} \frametitle{Sommaire} 
+		\tableofcontents[
+		currentsection,
+		currentsubsection,
+		subsectionstyle=show/shaded/hide,
+		sectionstyle=show/shaded
+		] \end{frame} }
+
+\lstset{
+	language=Matlab,
+	basicstyle=\ttfamily\footnotesize,
+	keywordstyle=\bfseries\color{blue},
+	commentstyle=\itshape\color{green!50!black},
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	stepnumber=1,
+	breaklines=true,
+	tabsize=1,
+	frame=single,
+	showspaces=false,
+	showstringspaces=false,
+	inputencoding=utf8
+}
+
+\title{Modélisation mathématique du fonctionnement du cerveau}
+\author{
+	\textbf{Réalisé par :} Ismail ElFayk - Ikram Chebbac \\
+	\textbf{Encadré par :} \textbf{M. ElHoussine Azroul}
+}
+\date{15 Avril 2025}
+\institute{
+	Master Mathématiques Appliquées et Systèmes Intelligents (MASI) \\
+	Faculté des Sciences Dhar El Mehraz \\
+	Université Sidi Mohammed Ben Abdellah
+}
+\titlegraphic{\includegraphics[scale=0.3]{pictures/fsdmlogo.png}}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{frame}{Table des matières}
+		\tableofcontents[hideothersubsections]
+	\end{frame}
+	
+	\section[Intro]{Introduction}
+	\begin{frame}{Introduction}
+		\justifying
+		Le cerveau, merveille de la nature, réalise des computations complexes pour transformer les données sensorielles en perceptions et actions. Ces processus, opérant à l’échelle de la milliseconde, reposent sur des mécanismes biophysiques au niveau des neurones et de leurs composants. Loin des modèles simplistes des réseaux de neurones, ces derniers effectuent des opérations sophistiquées en exploitant des variables comme le potentiel de membrane ou les concentrations en ions sodium et potassium. Mais comment fonctionnent ces "circuits biologiques" ? Quels sont leurs éléments fondamentaux ? Cette présentation explore les principes biophysiques sous-jacents à ces computations, du neurone complet aux modèles de la membrane neuronale (chapitre 2 et 3), en passant par le modèle emblématique de Hodgkin-Huxley (chapitre 4) et les analyses mathématiques et numériques (chapitres 5 et 6). Plongeons dans l’univers fascinant de la computation neuronale !
+	\end{frame}
+	
+	\section{Du système nerveux au neurone}
+	\subsection{Le système nerveux}
+	\begin{frame}{Le système nerveux \cite{widmaier2008vanders}}
+		\textbf{Le système nerveux central (SNC)} comprend le cerveau et la moelle épinière.  
+		Le cerveau contrôle les fonctions comme la pensée, les mouvements et les sensations.  
+		La moelle épinière relie le cerveau au reste du corps et fait circuler les messages nerveux.\\[1ex]
+		
+		\textbf{Le système nerveux périphérique (SNP)} regroupe les nerfs situés en dehors du SNC.  
+		Il transmet les informations entre le corps et le cerveau.  
+		Il se divise en deux parties :
+		\begin{itemize}
+			\item \textbf{Système somatique} : contrôle les mouvements volontaires (comme marcher).
+			\item \textbf{Système autonome} : gère les fonctions involontaires (comme respirer).
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Le système nerveux}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/systeme nerveu.png}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				Le système nerveux autonome a deux parties :\\[1ex]
+				\begin{itemize}
+					\item \textbf{Le système sympathique} prépare le corps au stress ou au danger (cœur qui bat vite, respiration rapide, pupilles dilatées).
+					\item \textbf{Le système parasympathique} aide le corps à se détendre et à revenir au calme (ralentit le cœur, la respiration, et économise l’énergie).
+				\end{itemize}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\subsection{Le cerveau}
+	\begin{frame}{Le cerveau}
+		\hspace*{1em}Le cerveau est l'organe situé dans la boîte crânienne, responsable de la régulation de la plupart des fonctions du corps. 
+		Il traite les informations sensorielles, contrôle les mouvements, et gère les fonctions cognitives telles que la pensée, la mémoire, et les émotions.
+		
+		\vspace{1em}
+		
+		\hspace*{1em}\textbf{Le cortex cérébral} : Divisé en quatre lobes principaux (frontal, pariétal, temporal, et occipital), 
+		il est responsable de fonctions complexes comme la pensée, la perception, la planification et la compréhension du langage.
+		
+		\vspace{0.5em}
+		
+		\hspace*{1em}\textbf{Le cervelet} : Situé sous le cerveau, il joue un rôle crucial dans la coordination des mouvements et l'équilibre.
+		
+		\vspace{0.5em}
+		
+		\hspace*{1em}\textbf{Le tronc cérébral} : Il contrôle les fonctions vitales telles que la respiration, la fréquence cardiaque et la digestion.    
+	\end{frame}
+	\begin{frame}{Les différents lobes du cerveau}
+		\includegraphics[width=\linewidth]{pictures/Les différents lobes du cerveau.png}    
+	\end{frame}
+	\begin{frame}{Les composantes du cerveau}
+		\includegraphics[width=\linewidth]{pictures/l anatomie de cerveau 1.png}    
+	\end{frame}
+	
+	\subsection{Les neurones}
+	\begin{frame}{Les neurones et le tissu nerveux \cite{gerstner2014neuronal} \cite{kandel2012principles}}
+		
+		\hspace*{1em} \textbf{Un neurone} est une cellule du système nerveux spécialisée dans l’initiation, 
+		l’intégration et la conduction de signaux électriques vers d’autres cellules, 
+		parfois sur de longues distances. Un signal peut déclencher de nouveaux signaux 
+		électriques dans d'autres neurones, ou stimuler une cellule glandulaire à sécréter 
+		des substances, ou encore une cellule musculaire à se contracter. 
+		
+		\hspace*{1em}Ainsi, les neurones constituent un moyen essentiel de contrôle des activités 
+		d’autres cellules. L’incroyable complexité des connexions entre les neurones est 
+		à la base de phénomènes tels que la conscience et la perception. 
+		
+		\hspace*{1em}Un ensemble de neurones forme un tissu nerveux, tel que celui du cerveau ou de 
+		la moelle épinière. Dans certaines parties du corps, les prolongements cellulaires 
+		de nombreux neurones sont regroupés avec du tissu conjonctif ; 
+		ces prolongements forment un nerf, qui transporte les signaux de nombreux neurones 
+		entre le système nerveux et d’autres parties du corps.
+	\end{frame}
+	\begin{frame}{Les composantes du cerveau}
+		\includegraphics[width=\linewidth]{pictures/les neurons dans le cerveau.png}    
+	\end{frame}
+	\begin{frame}{Structure et cellules du système nerveux central : neurones et cellules gliales}
+		\includegraphics[width=\linewidth]{pictures/les neurons dans le cerveau 2.png}    
+	\end{frame}
+	\begin{frame}{Anatomie du neurone}
+		\hspace*{1em}Les neurones varient en taille et en forme, mais tous partagent des caractéristiques qui permettent la communication entre cellules. Les neurones possèdent des prolongements appelés processus qui assurent les fonctions d'entrée et de sortie des signaux. Ces processus comprennent les dendrites et les axones.
+	\end{frame}
+	\begin{frame}{Anatomie du neurone}
+		\hspace*{1em}Le \textbf{corps cellulaire} (ou soma) contient le noyau et les ribosomes, nécessaires à la synthèse des protéines. Les \textbf{dendrites} sont des prolongements ramifiés du corps cellulaire. Dans le système nerveux périphérique (SNP), elles reçoivent des informations sensorielles et les transmettent aux neurones sensoriels. Dans le système nerveux central (SNC), les dendrites et le corps cellulaire reçoivent principalement les signaux des autres neurones. Les dendrites ont une surface étendue grâce à des épines dendritiques, ce qui permet une meilleure réception des signaux et pourrait jouer un rôle dans l'apprentissage et la mémoire.
+		
+		\hspace*{1em}L'\textbf{axone}, aussi appelé fibre nerveuse, est un long prolongement qui porte les signaux sortants vers les cellules cibles. L'endroit où l'axone commence à partir du corps cellulaire s'appelle le \textbf{segment initial} (ou cône axonique), qui est le point où les signaux électriques sont générés. 
+		
+		\hspace*{1em}L'axone peut se diviser en branches appelées \textbf{collatérales}. Plus l'axone et ses collatérales sont ramifiés, plus le neurone peut influencer d'autres cellules.
+	\end{frame}
+	\begin{frame}{Anatomie du neurone}
+		\includegraphics[width=\linewidth]{pictures/anatomie de neuron 1.png}    
+	\end{frame}
+	\begin{frame}{Anatomie du neurone}
+		\includegraphics[scale=0.2]{pictures/anatomie de neuron 2.png}    
+	\end{frame}
+	\begin{frame}{Anatomie du neurone}
+		\includegraphics[width=\linewidth]{pictures/anatomie de neuron 3.png}    
+	\end{frame}
+	\begin{frame}{Membrane du neurone}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/protein 1.png}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/protein 2.png}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	\begin{frame}{Échelle de grandeur} 
+		\includegraphics[width=\linewidth]{pictures/scale.png}    
+	\end{frame}
+	\section{Potentiels membranaires}
+	\subsection{Principes fondamentaux de l'électricité}
+	\begin{frame}{Potentiels de la membrane}
+		\hspace*{1em}Les principaux ions du liquide extracellulaire sont le sodium ($Na^+$) et le chlorure ($Cl^-$), tandis que le liquide intracellulaire est riche en potassium ($K^+$) et en molécules non pénétrantes chargées négativement (phosphates, protéines).
+		
+		\hspace*{1em}Les phénomènes électriques produits par la distribution de ces ions se manifestent au niveau de la membrane plasmique et sont essentiels à la communication entre cellules, notamment chez les neurones.
+		
+		\hspace*{1em}Les charges opposées s’attirent, celles de même signe se repoussent. Lorsqu'elles sont séparées, elles créent une \textbf{différence de potentiel} (exprimée en millivolts), capable de générer un \textbf{courant électrique} si une voie est disponible. Le courant dépend de cette différence de potentiel et de la résistance du milieu, selon la loi d’Ohm :
+		\[
+		I = \frac{V}{R}
+		\]
+	\end{frame}
+	\begin{frame}{Potentiels de la membrane}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/ions.png}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				Les liquides biologiques, riches en ions, sont de bons conducteurs. En revanche, la membrane plasmique, composée de lipides, est un isolant qui sépare deux compartiments conducteurs : l’intérieur et l’extérieur de la cellule.
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\subsection{Le potentiel du repos}
+	\begin{frame}{Le potentiel du repos}
+		\hspace*{1em}Toutes les cellules au repos ont une différence de potentiel à travers leur membrane plasmique, l'intérieur étant chargé négativement par rapport à l'extérieur. Ce potentiel est appelé le potentiel de membrane au repos. Par convention, le liquide extracellulaire sert de référence pour la tension, et la polarité du potentiel de membrane est exprimée en fonction de la charge excédentaire à l'intérieur de la cellule. Par exemple, si la différence de potentiel est de 70 mV et que l'intérieur est négatif, on dit que le potentiel est de -70 mV.
+		
+		\hspace*{1em}Le potentiel de membrane au repos varie de -25 à -100 mV selon le type de cellule, les neurones ayant généralement des valeurs entre -40 et -90 mV. Il existe en raison d'un léger excédent d'ions négatifs à l'intérieur de la cellule et d'ions positifs à l'extérieur. Ces charges excessives s’accumulent près de la membrane plasmique, tandis que le reste des fluides intra- et extracellulaires reste électriquement neutre.
+	\end{frame}
+	\begin{frame}{Le potentiel du repos}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/cell voltage.png}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/ions and cell.png}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}{Le potentiel du repos}
+		\hspace*{1em}Les principales concentrations d'ions affectant le potentiel de membrane sont le sodium ($Na^+$), le potassium ($K^+$) et le chlorure ($Cl^-$). Le sodium et le potassium jouent un rôle essentiel dans la génération du potentiel de membrane au repos. La différence de concentration de ces ions est maintenue par la pompe sodium-potassium ($Na^+/K^+$-ATPase), qui expulse $Na^+$ et fait entrer $K^+$. Les concentrations de $Na^+$ et $Cl^-$ sont plus faibles à l'intérieur de la cellule, tandis que la concentration de $K^+$ est plus élevée à l'intérieur.
+	\end{frame}
+	\begin{frame}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/pomp 1.png}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/pomp 2.png}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\subsection{Potentiel d'action}
+	\begin{frame}
+		\hspace*{1em}Le potentiel d'action est un changement rapide et transitoire du potentiel membranaire dû à l'ouverture séquentielle de canaux voltage-dépendants pour $Na^+$ et $K^+$.
+		
+		\vspace{1em}
+		\hspace*{1em}Les potentiels d'action diffèrent des autres types de potentiels (potentiels gradués) par leur amplitude et rapidité. Un potentiel d'action peut entraîner un changement de potentiel membranaire allant jusqu'à 100~mV, comme une dépolarisation de -70~mV à +30~mV, suivie d'une repolarisation. Ce processus est rapide (1--4 millisecondes) et peut se répéter plusieurs centaines de fois par seconde, permettant la communication du système nerveux sur de longues distances.
+	\end{frame}
+	\begin{frame}
+		\includegraphics[scale=0.27]{pictures/1.png}
+	\end{frame}
+	\begin{frame}{Mécanisme du potentiel d'action}
+		Au repos, la membrane est proche du \textbf{potentiel d'équilibre} du $K^+$. Une stimulation dépolarisante ouvre les canaux $Na^+$, entraînant une \textbf{dépolarisation} rapide via une boucle de rétroaction positive. La membrane devient temporairement positive.
+		
+		\vspace{1em}
+		Ensuite, les canaux $Na^+$ se ferment via une \textit{inactivation}, et les canaux $K^+$ s’ouvrent, entraînant une \textbf{repolarisation}. Une \textbf{hyperpolarisation} temporaire suit, appelée \textbf{post-hyperpolarisation}, avant le \textbf{retour au repos}. Peu d’ions traversent la membrane à chaque potentiel d’action, mais les gradients sont maintenus par la pompe $Na^+/K^+$-ATPase.
+		
+		\vspace{1em}
+		Le potentiel d'action suit la règle du \textbf{tout ou rien} : s’il atteint le seuil (généralement $\sim$15~mV au-dessus du repos), il se déclenche entièrement, sinon, il échoue. L’intensité du stimulus ne change pas l’amplitude du potentiel d'action, mais affecte sa fréquence.
+	\end{frame}
+	
+	\begin{frame}
+		Des anesthésiques (ex. : lidocaïne) ou des toxines (ex. : tétrodotoxine du fugu) peuvent bloquer les canaux $Na^+$ et empêcher la conduction nerveuse.
+		
+		Enfin, deux \textbf{périodes réfractaires} suivent chaque potentiel d’action :
+		
+		\begin{itemize}
+			\item \textbf{Absolue} : aucun nouveau potentiel possible.
+			\item \textbf{Relative} : un nouveau potentiel est possible si le stimulus est plus fort.\\
+			Ces périodes assurent la séparation des signaux et leur propagation unidirectionnelle.
+		\end{itemize}           
+	\end{frame}
+	\begin{frame}
+		\includegraphics[width=\linewidth]{pictures/2.png}
+	\end{frame}
+	\begin{frame}
+		\includegraphics[width=\linewidth]{pictures/3.png}
+	\end{frame}
+	\begin{frame}
+		\includegraphics[width=\linewidth]{pictures/6.png}
+	\end{frame}
+	\begin{frame}
+		\includegraphics[width=\linewidth]{pictures/7.png}
+	\end{frame}
+	\begin{frame}
+		\includegraphics[width=\linewidth]{pictures/4.png}
+	\end{frame}
+	\begin{frame}
+		\includegraphics[width=\linewidth]{pictures/5.png}
+	\end{frame}
+	\begin{frame}
+		\includegraphics[scale=0.22]{pictures/8.png}
+	\end{frame}
+	
+\subsection{Transmission de l'information nerveuse : Synapses}
+\begin{frame}{Synapse}
+	\begin{itemize}
+		\item [$\diamond$] Les potentiels de membrane sont à la base de l'excitabilité des neurones, permettant la génération de signaux électriques.
+		\item [$\to$] \textbf{La synapse} est le point de jonction où un neurone (présynaptique) transmet un signal à un autre neurone (postsynaptique) ou à une cellule cible, comme les muscles ou les glandes. Elle joue un rôle clé dans le traitement et la transmission de l'information dans le système nerveux.
+		\item [$\diamond$] \textit{Structure d’une synapse chimique} :
+		\begin{itemize}
+			\item[-] Bouton présynaptique : Contient des vésicules remplies de neurotransmetteurs.
+			\item[-] Fente synaptique : Espace étroit (20-40 nm) entre les deux neurones.
+			\item[-] Membrane postsynaptique : Contient des récepteurs spécifiques aux neurotransmetteurs.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+\begin{frame}{Anatomie des synapses}
+	
+	\begin{columns}
+		\begin{column}{0.6\textwidth}
+			\includegraphics[width=\linewidth]{pictures/synapse1}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\includegraphics[width=\linewidth]{pictures/synapse2} 
+		\end{column}
+	\end{columns}
+	
+\end{frame}
+\begin{frame}{Mécanisme de libération des neurotransmetteurs}
+	\begin{itemize}
+		\item [$\diamond$]\textit{Types de synapses} :
+		\begin{itemize} 
+			\item[-] Principalement \textbf{chimiques}, utilisant des neurotransmetteurs.
+		\end{itemize}
+		\item [$\diamond$] \textit{Mécanisme de transmission}:
+		\begin{itemize}
+			\item[-] Un potentiel d’action arrive au bouton présynaptique.
+			\item[-] La dépolarisation ouvre des canaux calciques voltage-dépendants, permettant l’entrée de calcium.
+			\item[-] Le calcium déclenche la libération des neurotransmetteurs dans la fente synaptique.
+			\item[-] Les neurotransmetteurs se lient aux récepteurs postsynaptiques, modifiant le potentiel membranaire.
+			\item[-] Les neurotransmetteurs sont ensuite dégradés (ex. : par des enzymes) ou recaptés pour arrêter le signal.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+	
+	\section{Modèle de Hodgkin-Huxley}
+	\begin{frame}{Modèle de Hodgkin-Huxley : Introduction \cite{cronin1987mathematical}, \cite{gerstner2014neuronal}, \cite{koch1998biophysics}, \cite{bertram2000introduction}, \cite{ermentrout2010mathematical}, \cite{hodgkin1952quantitative}, \cite{nelson1995hodgkin}}
+		Après avoir compris le rôle fondamental de la membrane neuronale dans la propagation du signal nerveux, il est naturel de se demander comment modéliser précisément ces phénomènes électrophysiologiques. C’est ici qu’intervient une analogie essentielle : celle du circuit électrique.
+		
+		En effet, la membrane plasmique du neurone, avec ses canaux ioniques spécifiques et sa capacité à accumuler des charges électriques, peut être représentée comme un circuit électrique. Cette représentation permet non seulement de mieux comprendre les flux ioniques qui génèrent les potentiels d'action, mais aussi de les quantifier à l’aide d’équations précises.
+	\end{frame}
+	\begin{frame}{Modèle de Hodgkin-Huxley : Introduction}
+		C’est dans cette optique que les physiologistes britanniques Alan L. Hodgkin et Andrew F. Huxley ont développé en 1952 un modèle mathématique révolutionnaire, aujourd’hui connu sous le nom de modèle de Hodgkin-Huxley.
+		Leur travail s’appuie sur une série d’expériences réalisées sur l’axone géant du calmar, un modèle idéal en raison de son diamètre inhabituellement large (jusqu’à 1 mm), facilitant les mesures intracellulaires à une époque où les instruments de mesure étaient encore rudimentaires. À l’aide de microélectrodes et d’un dispositif de voltage clamp (pince de tension), Hodgkin et Huxley ont pu mesurer, de manière indépendante, les courants ioniques à travers la membrane. Leurs données ont ensuite été traduites en équations, permettant de simuler pour la première fois la génération et la propagation d’un potentiel d’action de manière réaliste.
+	\end{frame}
+	\begin{frame}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=\linewidth]{pictures/hodgkin huxley photo.png}
+			\caption{Alan HodgkinAlan Hodgkin (à droite) et Andrew Huxley (à gauche) dans leur laboratoire Marine Lab à Plymouth (Angleterre) en 1949.}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{Modèle de Hodgkin-Huxley : Introduction}
+		Le modèle de Hodgkin-Huxley peut être compris à l’aide de la figure (4.1). La membrane cellulaire semi-perméable sépare l’intérieur de la cellule du liquide extracellulaire et agit comme un condensateur. Si un courant d’entrée $I(t)$ est injecté dans la cellule, il peut soit ajouter une charge supplémentaire sur le condensateur, soit fuir à travers les canaux de la membrane cellulaire. Chaque type de canal est représenté dans la figure (d'anatomie du neuron) par une résistance. Le canal non spécifique possède une résistance $R$, le canal sodique une résistance $R_{\text{Na}}$, et le canal potassique une résistance $R_K$. La flèche diagonale traversant le symbole de la résistance indique que la valeur de cette résistance n’est pas fixe, mais varie selon que le canal ionique est ouvert ou fermé.
+	\end{frame}
+	\begin{frame}{Modèle de Hodgkin-Huxley :}
+		\begin{columns}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/membranecir}
+			\end{column}
+			\begin{column}{0.5\textwidth}
+				\includegraphics[width=\linewidth]{pictures/circuit} 
+			\end{column}
+		\end{columns}
+		\begin{center}
+			Figure (4.1)
+		\end{center}
+	\end{frame}
+	\begin{frame}{Modèle de Hodgkin-Huxley :}    
+		En raison du transport actif des ions à travers la membrane cellulaire, la concentration ionique à l’intérieur de la cellule est différente de celle dans le liquide extracellulaire. Le potentiel de Nernst généré par cette différence de concentration est représenté par une pile dans la figure (4.1). Comme le potentiel de Nernst est différent pour chaque type d’ion, il existe des piles séparées pour le sodium, le potassium et le troisième canal non spécifique, avec des tensions de pile respectives $E_{\text{Na}}$, $E_K$ et $E_L$.
+	\end{frame}
+	\begin{frame}
+		Traduisons maintenant ce schéma de circuit électrique en équations mathématiques. La conservation de la charge électrique sur un morceau de membrane implique que le courant appliqué $I(t)$ peut être réparti entre un courant capacitif $I_C$ qui charge le condensateur $C$, et d'autres composantes $I_k$ qui passent à travers les canaux ioniques. Ainsi :
+		\[
+		I(t) = I_C(t) + \sum_k I_k(t),
+		\]
+		où la somme est prise sur tous les canaux ioniques.
+	\end{frame}
+	\begin{frame}    
+		Dans le modèle standard de Hodgkin–Huxley, il n’y a que trois types de canaux : un canal sodique (index $\text{Na}$), un canal potassique (index $K$) et un canal de fuite non spécifique avec une résistance $R$, comme illustré dans la figure (4.1). À partir de la définition de la capacité $C = \frac{q}{V}$, où $q$ est une charge et $V$ la tension aux bornes du condensateur, on obtient que le courant de charge est $I_C = C \frac{dV}{dt}$. On déduit donc de l’équation précédente :
+		\[
+		C \frac{dV}{dt} = -\sum_k I_k(t) + I(t).
+		\]
+		En termes biologiques, $V$ est la tension à travers la membrane, et $\sum_k I_k$ représente la somme des courants ioniques qui traversent la membrane cellulaire.
+	\end{frame}
+	\begin{frame}
+		Comme mentionné ci-dessus, le modèle de Hodgkin–Huxley décrit trois types de canaux. Tous les canaux peuvent être caractérisés par leur résistance ou, de manière équivalente, par leur conductance. Le canal de fuite est décrit par une conductance indépendante de la tension $G_L = \frac{1}{R}$. Puisque $V$ est la tension totale à travers la membrane cellulaire et $E_L$ la tension de la pile, la tension au niveau de la résistance de fuite dans la figure (4.1) est $V - E_L$. En utilisant la loi d'Ohm, on obtient un courant de fuite $I_L = G_L (V - E_L)$.
+		Les constantes $G_L$ et $E_L$ sont données par : 
+		\begin{itemize}
+			\item $\bar{G}_L = 0.3 \, \text{mS}/\text{cm}^2$
+			\item $E_L = -10.5989 \, \text{mV}$ 
+		\end{itemize}
+	\end{frame}
+	\begin{frame}
+		Les mathématiques des autres canaux ioniques sont analogues, sauf que leur conductance dépend de la tension et du temps. Si tous les canaux sont ouverts, ils transmettent des courants avec une conductance maximale $G_{\text{Na}}$ ou $G_K$, respectivement. Cependant, normalement, certains des canaux sont bloqués. 
+		La percée de Hodgkin et Huxley a été de réussir à mesurer comment la résistance effective d’un canal varie en fonction du temps et de la tension. De plus, ils ont proposé une description mathématique de leurs observations. Plus précisément, ils ont introduit des variables supplémentaires de "basculement" $m$, $n$ et $h$ pour modéliser la probabilité qu’un canal soit ouvert à un moment donné.
+		L’action combinée de $m$ et $h$ contrôle les canaux $Na^+$, tandis que les portes $K^+$ sont contrôlées par $n$. 
+	\end{frame}
+	\begin{frame}
+		\textbf{Les variables de basculement} (ou "gating variables") : 
+		Les variables $m$, $n$, et $h$ modélisent la probabilité qu'un canal ionique soit ouvert à un instant donné. Ces variables sont des fonctions du temps et de la tension membranaire et déterminent la fraction des canaux ouverts à chaque instant.
+		\begin{itemize}
+			\item[$m$ :] Modélise l'activation des canaux sodiques ($Na^+$). C'est une variable qui augmente avec la tension, indiquant qu'à des tensions plus positives, plus de canaux sodiques s'ouvrent.
+			\item[$h$ :] Modélise l'inactivation des canaux sodiques ($Na^+$). Cette variable diminue à mesure que la tension devient plus positive, représentant la fermeture des canaux sodiques à des tensions plus élevées.
+			\item[$n$ :] Modélise l'activation des canaux potassiques ($K^+$). Comme $m$, $n$ augmente avec la tension, mais pour les canaux $K^+$, qui s'ouvrent à des tensions plus positives.
+		\end{itemize}
+	\end{frame}
+	\subsection{Courant potassique $I_K$}
+	\begin{frame}
+		Hodgkin et Huxley (1952d) modélisent le courant potassique selon la relation suivante :
+		\begin{equation}
+			I_K = \bar{G}_K n^4 (V - E_K)
+			\label{eq:1}
+		\end{equation}
+		où :
+		\begin{itemize}
+			\item $\bar{G}_K = 36 \, \text{mS}/\text{cm}^2$ est la conductance maximale pour le potassium,
+			\item $E_K = 12 \, \text{mV}$ est le potentiel d’équilibre du potassium,
+			\item $n \in [0,1]$ est une variable sans dimension représentant l’état d’une particule d’activation fictive (proportion de particules).
+		\end{itemize}
+		Le terme $n^4$ signifie que quatre particules de gating doivent simultanément être en état \textit{ouvert} (permissive) pour que le canal laisse passer le courant, reflétant ainsi une dynamique coopérative.
+	\end{frame}
+	
+	\subsection{Cinétique de transition des particules}
+	\begin{frame}
+		On suppose que chaque particule peut être dans deux états : ouvert ou fermé. Les transitions suivent une cinétique du premier ordre :
+		\begin{equation}
+			n \underset{\alpha_n}{\overset{\beta_n}{\rightleftharpoons}} 1 - n
+			\label{eq:2}
+		\end{equation}
+		où :
+		\begin{itemize}
+			\item $\alpha_n(V)$ est le taux de transition (proportion de particules) de l’état fermé vers l’état ouvert,
+			\item $\beta_n(V)$ est le taux de transition inverse.
+		\end{itemize}
+		Cela conduit à l’équation différentielle suivante :
+		\begin{equation}
+			\frac{dn}{dt} = \alpha_n(V)(1 - n) - \beta_n(V) n
+			\label{eq:3}
+		\end{equation}
+	\end{frame}
+	
+	\begin{frame}
+		Hodgkin et Huxley (1952d) ont proposé les approximations suivantes pour les constantes de taux :
+		\begin{equation}
+			\alpha_n(V) = \frac{10 - V}{100(e^{(10 - V)/10} - 1)}     \label{eq:4}
+		\end{equation}
+		\begin{equation}
+			\beta_n(V) = 0.125e^{-V/80}     \label{eq:5}
+		\end{equation}
+		où $V$ est le potentiel de membrane relatif au potentiel de repos de l’axone, en millivolts.
+	\end{frame}
+	
+	\subsection{Courant Sodique $I_{\text{Na}}$}
+	\begin{frame}
+		Pour modéliser le comportement cinétique du courant sodique, \textbf{Hodgkin et Huxley} ont introduit deux particules de transition : une particule \textbf{d'activation} $m$ et une particule \textbf{d'inactivation} $h$. Le courant sodique est exprimé par la relation :
+		\begin{equation}
+			I_{\text{Na}} = \bar{G}_{\text{Na}} m^3 h (V - E_{\text{Na}})
+			\label{eq:6}
+		\end{equation}
+		où :
+		\begin{itemize}
+			\item $\bar{G}_{\text{Na}}$ est la conductance sodique maximale (120 mS/cm$^2$),
+			\item $E_{\text{Na}} = -115\, \text{mV}$ est le potentiel de renversement du sodium,
+			\item $V$ est le potentiel de membrane,
+			\item $m$ et $h$ sont des variables sans dimension, avec $0 \leq m,h \leq 1$.
+		\end{itemize}
+	\end{frame}
+	\begin{frame}
+		Par convention, le courant sodique est \textbf{négatif} (entrant) pour $V < E_{\text{Na}}$. 
+		Les particules $m$ et $h$ effectuent des transitions de premier ordre, indépendamment les unes des autres. La probabilité d’avoir trois particules $m$ et une $h$ en état ouvert est $m^3 h$. L’évolution temporelle de ces variables est décrite par deux équations différentielles :
+		\begin{align}
+			\frac{dm}{dt} &= \alpha_m(V)(1 - m) - \beta_m(V) m \label{eq:7} \\
+			\frac{dh}{dt} &= \alpha_h(V)(1 - h) - \beta_h(V) h     \label{eq:8}
+		\end{align}
+	\end{frame}
+	\begin{frame}
+		Les constantes de taux sont données empiriquement :
+		\begin{align}
+			\alpha_m(V) &= \frac{25 - V}{10 \left( e^{(25 - V)/10} - 1 \right)} \label{eq:9} \\
+			\beta_m(V) &= 4 e^{-V/18} \label{eq:10} \\
+			\alpha_h(V) &= 0.07 e^{-V/20} \label{eq:11} \\
+			\beta_h(V) &= \frac{1}{e^{(30 - V)/10} + 1}     \label{eq:12}
+		\end{align}
+	\end{frame}
+	
+\subsection{Modèle complet}
+	\begin{frame}    
+		On peut regrouper tous les courants circulant à travers un dans l'équation \eqref{eq:13} :
+		\begin{align}
+			C_m \frac{dV}{dt} &= -\bar{G}_{\text{Na}}\, m^3 h (V - E_{\text{Na}})
+			-\bar{G}_{\text{K}}\, n^4 (V - E_{\text{K}})
+			-\bar{G}_{\text{L}}\, (V - E_{\text{L}})
+			+ I_{\text{ext}} 
+			\label{eq:13} \\
+			\frac{dm}{dt} &= \alpha_m(V)(1 - m) - \beta_m(V) m \label{eq:14}\\
+			\frac{dh}{dt} &= \alpha_h(V)(1 - h) - \beta_h(V) h \label{eq:15}\\
+			\frac{dn}{dt} &= \alpha_n(V)(1 - n) - \beta_n(V) n \label{eq:16}
+		\end{align}
+		où $I_{\text{ext}}$ est le courant injecté via une électrode intracellulaire.
+	\end{frame}
+	
+	\subsection{États d'équilibre du modèle de Hodgkin-Huxley}
+	\begin{frame}{États d'équilibre du modèle de Hodgkin-Huxley}
+		Pour déterminer les \textbf{états d'équilibre} (ou points fixes) du modèle de Hodgkin-Huxley, nous cherchons les valeurs des variables d'état \( V \), \( m \), \( h \), et \( n \) pour lesquelles toutes les dérivées temporelles sont nulles :
+		\[
+		\frac{dV}{dt} = 0, \quad \frac{dm}{dt} = 0, \quad \frac{dh}{dt} = 0, \quad \frac{dn}{dt} = 0.
+		\]
+	\end{frame}
+	
+	\begin{frame}{Conditions d'équilibre}
+		À l'équilibre, toutes les dérivées sont nulles, ce qui donne :
+		\begin{align*}
+			0 &= -\bar{G}_{Na} m^3 h (V - E_{Na}) - \bar{G}_K n^4 (V - E_K) - \bar{G}_L (V - E_L) + I_{ext}, \\
+			0 &= \alpha_m(V) (1 - m) - \beta_m(V) m, \\
+			0 &= \alpha_h(V) (1 - h) - \beta_h(V) h, \\
+			0 &= \alpha_n(V) (1 - n) - \beta_n(V) n.
+		\end{align*}
+	\end{frame}
+	
+	\begin{frame}{Variables de porte à l'équilibre}
+		Pour chaque variable \( x = m, h, n \), la condition d'équilibre est :
+		\[
+		\alpha_x(V) (1 - x) = \beta_x(V) x.
+		\]
+		En réarrangeant :
+		\[
+		x = \frac{\alpha_x(V)}{\alpha_x(V) + \beta_x(V)}.
+		\]
+		Ainsi, les valeurs à l'équilibre sont :
+		\begin{align*}
+			m_\infty(V) &= \frac{\alpha_m(V)}{\alpha_m(V) + \beta_m(V)}, \\
+			h_\infty(V) &= \frac{\alpha_h(V)}{\alpha_h(V) + \beta_h(V)}, \\
+			n_\infty(V) &= \frac{\alpha_n(V)}{\alpha_n(V) + \beta_n(V)}.
+		\end{align*}
+	\end{frame}
+	
+	\begin{frame}{Taux de transition}
+		\small
+		Les taux de transition sont donnés par :
+		\begin{itemize}
+			\item Pour \( m \) :
+			\[
+			\alpha_m(V) = \frac{0.1 (V + 40)}{1 - \exp(-(V + 40)/10)}, \quad \beta_m(V) = 4 \exp(-(V + 65)/18).
+			\]
+			\item Pour \( h \) :
+			\[
+			\alpha_h(V) = 0.07 \exp(-(V + 65)/20), \quad \beta_h(V) = \frac{1}{1 + \exp(-(V + 35)/10)}.
+			\]
+			\item Pour \( n \) :
+			\[
+			\alpha_n(V) = \frac{0.01 (V + 55)}{1 - \exp(-(V + 55)/10)}, \quad \beta_n(V) = 0.125 \exp(-(V + 65)/80).
+			\]
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Équation du potentiel à l'équilibre}
+		\small
+		Substituons \( m = m_\infty(V) \), \( h = h_\infty(V) \), et \( n = n_\infty(V) \) dans l'équation du potentiel :
+		\[
+		0 = -\bar{G}_{Na} [m_\infty(V)]^3 h_\infty(V) (V - E_{Na}) - \bar{G}_K [n_\infty(V)]^4 (V - E_K) - \bar{G}_L (V - E_L) + I_{ext}.
+		\]
+		Définissons la fonction :
+		\[
+		f(V) = \bar{G}_{Na} [m_\infty(V)]^3 h_\infty(V) (V - E_{Na}) + \bar{G}_K [n_\infty(V)]^4 (V - E_K) + \bar{G}_L (V - E_L) - I_{ext}.
+		\]
+		Les points fixes sont les solutions de :
+		\[
+		f(V) = 0.
+		\]
+	\end{frame}
+	
+	\begin{frame}{Paramètres standards}
+		Utilisons les paramètres standards pour l'axone géant de calmar :
+		\begin{itemize}
+			\item \( \bar{G}_{Na} = 120 \, \text{mS/cm}^2 \), \( E_{Na} = 50 \, \text{mV} \),
+			\item \( \bar{G}_K = 36 \, \text{mS/cm}^2 \), \( E_K = -77 \, \text{mV} \),
+			\item \( \bar{G}_L = 0.3 \, \text{mS/cm}^2 \), \( E_L = -54.4 \, \text{mV} \),
+			\item \( C_m = 1 \, \mu\text{F/cm}^2 \) (non utilisé ici, car \( \frac{dV}{dt} = 0 \)).
+		\end{itemize}
+		En général, on fixe \( I_{ext} = 0 \, \mu\text{A/cm}^2 \) pour déterminer le potentiel de repos.
+	\end{frame}
+	
+	\begin{frame}{Résolution numérique}
+		Résoudre \( f(V) = 0 \) analytiquement est complexe en raison de sa non-linéarité. Numériquement, on peut utiliser une méthode comme Newton-Raphson ou un solveur (par exemple, \texttt{scipy.optimize.root} en Python) avec une estimation initiale de \( V \approx -65 \, \text{mV} \). Pour \( I_{ext} = 0 \), la solution est approximativement :
+		\[
+		V \approx -65 \, \text{mV}, \quad m_\infty \approx 0.05, \quad h_\infty \approx 0.6, \quad n_\infty \approx 0.32.
+		\]
+		Alternativement, on peut tracer \( f(V) \) pour \( V \in [-100, 50] \, \text{mV} \) afin d'identifier visuellement les zéros.
+		
+		Ce point fixe correspond à l'état de repos du neurone, où les courants ioniques s'équilibrent. Une perturbation suffisante (par exemple, via \( I_{ext} \) ou une variation de \( V \)) peut éloigner le système de cet équilibre, déclenchant un potentiel d'action.
+	\end{frame}
+	
+	\section{Analyse mathématique du modèle de Hodgkin-Huxley}
+	\begin{frame}{Plan de la démonstration \cite{brddy2000hodgkin} \cite{dayan2001theoretical} \cite{coddington1955theory}}
+		L’objectif de cette section est l’analyse mathématique du modèle de Hodgkin-Huxley, qui est sous forme d'un système d'équations différentielles ordinaires (EDO) non linéaires. 
+		Cela repose principalement sur le théorème de Cauchy-Lipschitz, aussi appelé théorème de Picard-Lindelöf. Nous utilisons ici la version locale du théorème, qui s'énonce comme suit :
+	\end{frame}                    
+	
+	\begin{frame}{Plan de la démonstration}
+		\begin{boxH}
+			\textbf{\textcolor{violet}{Rappel : Théorème de Cauchy-Lipschitz :}}
+			Soit $X(x,t)$ une fonction continue et localement lipschitzienne dans un ouvert $R \subseteq \mathbb{R}^n \times \mathbb{R}$. Alors, pour tout point $(x_0, t_0) \in R$, il existe une unique solution $x(t)$ du système différentiel
+			\[
+			\frac{dx}{dt} = X(x,t)
+			\]
+			telle que $x(t_0) = x_0$, et définie sur un intervalle $[t_0, b]$ (appelé intervalle d'existence maximal à droite) avec $b \leq \infty$, tel que si $b < \infty$ :
+			\begin{itemize}
+				\item[-] soit la solution devient \textbf{non bornée} quand $t \rightarrow b$ (c'est-à-dire $\lim_{t \to b^-} |x(t)| = \infty$), 
+				\item[-] soit \textbf{proche de la frontière du domaine $R$} où $X(x,t)$ est définie.
+			\end{itemize}
+		\end{boxH}
+	\end{frame}
+	\begin{frame}{Plan de la démonstration}
+		Une fois l’existence et l’unicité établies localement (près du point initial), l’étude cherche à prolonger la solution sur un intervalle plus large. Ce prolongement est possible tant que la solution reste dans le domaine défini par le théorème. Deux cas sont possibles : soit la solution existe pour tout temps $t \geq 0$, soit elle cesse d’exister à un instant $b$ si elle quitte ce domaine. Pour résoudre ce dilemme, l’objectif est ensuite de prouver que les solutions restent \textbf{bornées}, ce qui garantit leur existence pour tout $t \geq 0$.
+		
+		On notera notre système par
+		\begin{equation}
+			\frac{dx}{dt}=H(x)
+			\label{eq:20}
+		\end{equation}
+		avec $H=(H_1, H_2, H_3,H_4)$, et $x=(v,n,m,h)$
+	\end{frame}
+	\begin{frame}{Plan de la démonstration}
+		où
+		\[
+		H_1(v, n, m, h) = \frac{1}{C_m}(-\bar{G}_{\text{Na}} m^3 h (v - E_{\text{Na}}) - \bar{G}_{\text{K}} n^4 (v - E_{\text{K}}) - G_{\text{L}} (v - E_{\text{L}}) + I_{\text{ext}})
+		\]
+		\[
+		H_2(v, n, m, h) = \alpha_n(v)(1 - n) - \beta_n(v)n
+		\]
+		\[
+		H_3(v, n, m, h) = \alpha_m(v)(1 - m) - \beta_m(v)m
+		\]
+		\[
+		H_4(v, n, m, h) = \alpha_h(v)(1 - h) - \beta_h(v)h
+		\]
+	\end{frame}
+	
+	\begin{frame}{Plan de la démonstration}
+		Nous allons montrer que $H_1, H_2, H_3, H_4$ sont des fonctions entières des quatre variables réelles $v, n, m, h$, ce qui impliquera qu'elles sont à la fois continues et localement lipschitziennes.
+	\end{frame}
+	\begin{frame}{Rappel : Fonction Analytique, Fonction Entière}
+		\begin{boxO}
+			\textbf{\textcolor{orange}{Définition:}} Soit $f : \Omega \to \mathbb{C}$ une fonction et $z_0 \in \Omega$.
+			\begin{enumerate}
+				\item On dit que $f$ est développable en série entière au voisinage de $z_0$ s'il existe :
+				\begin{itemize}
+					\item un nombre réel $r > 0$ tel que $D(z_0, r) \subset \Omega$;
+					\item une série entière $\sum_{n=0}^{+\infty} a_n z^n$ de rayon de convergence $R > r$ telle que :
+					\[
+					\forall z \in D(z_0, r), \quad f(z) = \sum_{n=0}^{+\infty} a_n (z - z_0)^n.
+					\]
+				\end{itemize}
+				\item On dit que $f$ est \textbf{analytique} dans $\Omega$ si elle est développable en série entière au voisinage de tout point de $\Omega$.
+				\item Si $\Omega=\mathbb{C}$, on dit que $f$ est une fonction \textbf{entière}.
+			\end{enumerate}
+		\end{boxO}
+	\end{frame}
+	\begin{frame}
+		\begin{boxG}
+			\textbf{\textcolor{green!60!black}{Proposition}}
+			\textit{Les fonctions $\alpha_n, \alpha_m, \alpha_h, \beta_n, \beta_m, \beta_h$ sont des fonctions entières de $v$.}    
+		\end{boxG}
+		
+		\textbf{Preuve}
+		
+		Posons :
+		\[
+		f(x) = 
+		\begin{cases}
+			\frac{x}{-1 + \exp(x)} & \text{si } x \neq 0, \\
+			1 & \text{si } x = 0.
+		\end{cases}
+		\]
+		
+		Pour $x \neq 0$, comme $f$ est le quotient de deux fonctions entières et que le dénominateur est non nul, on a que $f$ est analytique pour tout réel $x \neq 0$.
+		
+		Il est bien connu qu’il existe un voisinage de zéro tel que $f$ est représentée par une série entière en $x$. 
+	\end{frame}
+	
+	\begin{frame}
+		En effet, les coefficients $B_n$ de la série entière représentant $f$, 
+		\[
+		f(x) = \sum_{n=0}^{\infty} B_n \frac{x^n}{n!},
+		\]
+		sont les nombres de Bernoulli. 
+		Les $B_n = f^{(n)}(0)$ vérifient :
+		\[
+		B_0 = 1, \quad B_1 = -\frac{1}{2}, \quad B_2 = \frac{1}{6}, \quad \sum_{k=0}^{n-1} \binom{n}{k} B_k = 0 \quad \text{si } n = 2,3,\ldots
+		\]
+		\[
+		B_{2n+1} = 0 \quad \text{si } n = 1, 2, 3, 4, \ldots
+		\]
+	\end{frame}
+	
+	\begin{frame}
+		Une preuve directe que $f$ est analytique en zéro découle du fait que la fonction $g$ suivante est développable en série entière : 
+		\[
+		g(x) = \frac{-1 + \exp(x)}{x} = 1 + \sum_{n=1}^{\infty} \frac{x^n}{(n+1)!}
+		\]
+		
+		et qui est absolument convergente pour tout réel $x$.
+		
+		Cette propriété est établie à l’aide du théorème suivant :
+		
+		\textit{\textbf{Théorème} Si $p(z) = \sum_{n=0}^{\infty} p_n z^n$ pour $z \in \mathcal{V}(0)$, et si $p(0) \neq 0$, alors il existe un voisinage $U$ de 0 dans lequel l'inverse de $p$ a un développement en série entière de la forme :
+			\[
+			\frac{1}{p(z)} = \sum_{n=0}^{\infty} q_n z^n
+			\]
+			\quad \text{où} \quad $q_0 = \frac{1}{p_0}$.
+		}
+		
+		(Dans notre cas, $p = g$, $1/p = f$.) Ainsi, $f$ est analytique pour tout réel $x$.
+	\end{frame}
+	
+	\begin{frame}
+		Définissons maintenant :
+		\[
+		g_1(v) = \frac{v + 10}{10}, \quad g_2(v) = \frac{v + 25}{10}
+		\]
+		
+		Comme $g_1$ et $g_2$ sont analytiques pour tout réel $v$, il en est de même pour les compositions :
+		\[
+		\hat{\alpha}_n = f \circ g_1, \quad \hat{\alpha}_m = f \circ g_2
+		\]
+		Et donc.
+		\[
+		\alpha_n = \frac{1}{10} \hat{\alpha}_n
+		\]
+		est analytique pour tout réel $v$.
+	\end{frame}
+	
+	\begin{frame}
+		Puisque :
+		\[
+		1 + \exp\left(\frac{v + 30}{10}\right)
+		\]
+		est analytique pour tout réel $v$ et n’est jamais nul, le réciproque $\beta_h$ est analytique pour tout réel $v$.
+		
+		Enfin, comme les fonctions exponentielles sont analytiques pour tout réel $v$, on a que $\beta_n, \beta_m, \alpha_h$ sont analytiques pour tout réel $v$. Ceci achève la démonstration. $\blacksquare$
+		
+		\begin{itemize}
+			\item[$\to$] Il s’ensuit immédiatement que $H_2, H_3$ et $H_4$ 
+			sont des fonctions entières des quatre variables $v, n, m, h$.
+			\item La fonction $H_1$ est polynomiale en $v, n, m$ et $h$ et est donc une fonction \textbf{entière}.
+		\end{itemize}
+		On peut donc appliquer le théorème classique de Cauchy-Lipschitz sur le système \eqref{eq:20}.
+	\end{frame}
+	
+	\begin{frame}{Théorème d’existence et d’unicité}
+		Soit $I_0 > 0$ un réel donné. On définit :
+		\[
+		\omega = \min \left\{ -115, E_L -\frac{I_{\text{ext}}}{G_L} \right\}.
+		\]
+		Soit
+		\[
+		D = \left\{ (v, n, m, h) \mid \omega < v < 12, \ 0 < n < 1, \ 0 < m < 1, \ 0 < h < 1 \right\},
+		\]
+		et 
+		\[
+		D_t = \left\{ (t, v, n, m, h) \mid t \in \mathbb{R}, \ (v, n, m, h) \in D \right\}.
+		\]
+	\end{frame}
+	
+	\begin{frame}
+		\begin{boxH}
+			\textbf{\textcolor{violet}{Théorème :}}
+			Soit $x_0 \in D$, soit $H=(H_1, H_2, H_3,H_4)$, et soit $x=(v,n,m,h)$. 
+			Alors, le système
+			\[
+			\frac{dx}{dt}=H(x)
+			\]
+			possède une solution unique $x(t)$, satisfaisant la condition initiale : $x(t_0) = x_0$, et est définie sur un intervalle de la forme $t_0 \leq t < b 
+			~(b \leq +\infty)$.
+			
+			De plus, si $b < \infty$, alors la solution $x(t)$ tend vers la frontière de $D$ lorsque $t$ tend vers $b$.
+		\end{boxH}
+	\end{frame}
+	
+	\begin{frame}
+		\textbf{Preuve.} Nous montrons que le système satisfait les hypothèses du Théorème de Cauchy-Lipschitz :
+		\begin{itemize}
+			\item $D_t$ est ouvert
+			\item $H$ est entière dans $D_t$ et est donc certainement bien définie et de classe $C^1$, en particulier continue et localement lipschitzienne dans $D_t$.
+		\end{itemize}
+		
+		Par conséquent, le système $\frac{dx}{dt} = H(x)$ possède une solution unique $x(t) = (v(t), n(t), m(t), h(t))$ satisfaisant $x(t_0) = x_0$ et définie sur un intervalle d'existence maximal à droite $[t_0, b[,~ b \leq \infty$. Si $b < \infty$, puisque $D$ est borné, $x(t)$ ne peut pas être non bornée lorsque $t \to b$. Par conséquent, soit $b = \infty$, soit $x(t)$ approche la frontière de $D$ lorsque $t \to b$. $\blacksquare$
+	\end{frame}
+	
+	\begin{frame}
+		\begin{boxR}
+			\textbf{\textcolor{red}{Remarque 1.}} Puisque $(v(0), n(0), m(0), h(0)) \in D$, nous avons l'existence et l'unicité de la solution du système \eqref{eq:13} à partir du temps $t_0 = 0$ jusqu'à ce que la solution approche la frontière de $D$.
+		\end{boxR}
+		
+		\begin{boxR}
+			\textbf{\textcolor{red}{Remarque 2.}} Si nous considérons $\bar{D}$, la fermeture de $D$, alors l'intervalle maximal d'existence à droite est soit $[t_0, \infty[$ soit $[t_0, b]$, si $b < \infty$, où $x(b) \in \partial D$ (la frontière de $D$). Par conséquent, lorsque nous prouvons que $\omega < v(t) < 12$, $0 < n(t) \leq 1$, $0 \leq m(t) \leq 1$, et $0 < h(t) \leq 1$ pour tout intervalle de temps où la solution existe, nous prouvons en même temps qu'une solution unique du système \eqref{eq:13} existe pour $t \in [0, a)$.
+		\end{boxR}
+	\end{frame}
+	
+	\begin{frame}
+		\begin{boxR}
+			\textbf{\textcolor{red}{Remarque 3.}} Puisque $H_1$, $H_2$, $H_3$ et $H_4$ sont des fonctions analytiques, la solution $(v(t), n(t), m(t), h(t))$ est composée de fonctions analytiques, selon la théorie des équations différentielles ordinaires.
+		\end{boxR}
+		
+		\begin{boxR}
+			\textbf{\textcolor{red}{Remarque 4.}} D'après la théorie des équations différentielles ordinaires, puisque $(0, n(0), m(0), h(0)) \in D_t$ (qui est ouvert), la solution $(v(t), n(t), m(t), h(t))$ du système \eqref{eq:20} peut être prolongée à gauche de la valeur initiale $(0, n(0), m(0), h(0))$. Par conséquent, les équations différentielles \eqref{eq:20} sont satisfaites à la valeur initiale.
+		\end{boxR}
+	\end{frame}
+	
+	\section{Analyse numérique et simulations}
+	
+	\subsection{Rappel de la Méthode d’Euler}
+	\begin{frame}{Méthode d’Euler — Rappel \cite{siciliano2012hodgkin}}
+		\textbf{Problème général}\\
+		Une EDO du premier ordre s’écrit sous la forme :
+		\[
+		\frac{dy}{dt} = f(t, y), \quad y(t_0) = y_0
+		\]
+		On cherche à approximer la solution $y(t)$ sur un intervalle de temps à l’aide d’un pas $\Delta t$.
+		\vspace{0.5cm}
+		\textbf{Formule d’Euler (mise à jour à chaque pas)}
+		\[
+		y_{n+1} = y_n + \Delta t \cdot f(t_n, y_n)
+		\]
+		où :
+		\begin{itemize}
+			\item $y_n$ est l’approximation de $y(t_n)$,
+			\item $t_n = t_0 + n\Delta t$
+		\end{itemize}
+	\end{frame}
+	
+	\subsection{Construction du problème}
+	\begin{frame}
+		\textbf{Modèle de Hodgkin-Huxley} \\
+		\begin{align*}
+			\frac{dv}{dt} &= \frac{1}{C_m} \left[ I - \bar{G}_{Na} m^3 h (v - E_{Na}) - \bar{G}_K n^4 (v - E_K) - \bar{G}_l (v - E_l) \right] \\
+			\frac{dn}{dt} &= \alpha_n(v)(1 - n) - \beta_n(v)n \\
+			\frac{dm}{dt} &= \alpha_m(v)(1 - m) - \beta_m(v)m \\
+			\frac{dh}{dt} &= \alpha_h(v)(1 - h) - \beta_h(v)h
+		\end{align*}
+	\end{frame}
+	\begin{frame}
+		\noindent \textbf{Avec :}
+		\begin{align*}
+			\alpha_n(v) &= \frac{0.01(v + 50)}{1 - \exp\left( \frac{-(v + 50)}{10} \right)} 
+			&\beta_n(v) &= 0.125 \exp\left( \frac{-(v + 60)}{80} \right) \\
+			\alpha_m(v) &= \frac{0.1(v + 35)}{1 - \exp\left( \frac{-(v + 35)}{10} \right)} 
+			&\beta_m(v) &= 4.0 \exp\left( -0.0556(v + 60) \right) \\
+			\alpha_h(v) &= 0.07 \exp\left( -0.05(v + 60) \right)
+			&\beta_h(v) &= \frac{1}{1 + \exp(-0.1(v + 30))}
+		\end{align*}
+		\vspace{0.5em}
+		\noindent \textbf{Constantes :}
+		\begin{align*}
+			C_m &= 0.01 \, \mu\text{F/cm}^2 \\
+			E_{Na} &= 55.17 \, \text{mV}, \quad
+			E_K = -72.14 \, \text{mV}, \quad
+			E_l = -49.42 \, \text{mV} \\
+			\bar{G}_{Na} &= 1.2 \, \text{mS/cm}^2, \quad
+			\bar{G}_K = 0.36 \, \text{mS/cm}^2, \quad
+			\bar{G}_l = 0.003 \, \text{mS/cm}^2
+		\end{align*}
+	\end{frame}
+	
+	\subsection{Implementation}
+	\begin{frame}{L'algorithme}
+		\begin{columns}[T]
+			\column{0.48\textwidth}
+			\begin{itemize}
+				\item \textbf{Démarrer}
+				\item[] \vspace{0.5em}
+				\item \textbf{Initialisation}
+				\item[] \vspace{0.5em}
+				\item \textbf{Boucle : $i = 1$ à $N-1$}
+				\item[] \vspace{0.5em}
+				\item \textbf{Appel fonction HH}
+				\item[] \vspace{0.5em}
+				\item \textbf{Mise à jour}
+				\item[] \vspace{0.5em}
+				\item \textbf{Décision : $i < N-1$}
+				\item[] \vspace{0.5em}
+				\item \textbf{Tracer les courbes}
+				\item[] \vspace{0.5em}
+				\item \textbf{Fin}
+			\end{itemize}
+			\column{0.48\textwidth}
+			\includegraphics[scale=0.25]{pictures/schema.png}
+		\end{columns}
+	\end{frame}
+	\begin{frame}[fragile]{Les fonctions}
+		\begin{columns}[T]
+			\column{0.49\textwidth}
+			\begin{lstlisting}
+				% Fonctions des variables de porte 
+				function a = am(V)
+				a = 0.1 * (V + 35) / (1 - exp(-(V + 35) / 10));
+				end
+				function b = bm(V)
+				b = 4.0 * exp(-0.0556 * (V + 60));
+				end
+				function a = an(V)
+				a = 0.01 * (V + 50) / (1 - exp(-(V + 50) / 10));
+				end
+			\end{lstlisting}
+			\column{0.49\textwidth}
+			\begin{lstlisting}
+				function b = bn(V)
+				b = 0.125 * exp(-(V + 60) / 80);
+				end
+				function a = ah(V)
+				a = 0.07 * exp(-0.05 * (V + 60));
+				end
+				function b = bh(V)
+				b = 1 / (1 + exp(-0.1 * (V + 30)));
+				end
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	\begin{frame}[fragile]{La Fonction HH}
+		\begin{columns}[T]
+			\column{0.49\textwidth}
+			\begin{lstlisting}
+				% Fonctions utilisees
+				function dydt = HH(t, y)
+				% Constantes
+				ENa = 55.17;    % mV
+				EK = -72.14;    % mV
+				El = -49.42;    % mV
+				gbarNa = 1.2;   % mS/cm^2
+				gbarK = 0.36;   % mS/cm^2
+				gbarl = 0.003;  % mS/cm^2
+				Cm = 0.01;      % uF/cm^2
+				I = 0.1;        % uA/cm^2
+				% Variables d'etat
+				V = y(1);
+				n = y(2);
+				m = y(3);
+				h = y(4);
+				% Conductances ioniques
+				gNa = gbarNa * m^3 * h;
+				gK = gbarK * n^4;
+				gl = gbarl;
+			\end{lstlisting}
+			\column{0.49\textwidth}
+			\begin{lstlisting}
+				% Courants ioniques
+				INa = gNa * (V - ENa);
+				IK = gK * (V - EK);
+				Il = gl * (V - El);
+				% Equations differentielles
+				dVdt = (1 / Cm) * (I - INa - IK - Il);
+				dndt = an(V)*(1 - n) - bn(V)*n;
+				dmdt = am(V)*(1 - m) - bm(V)*m;
+				dhdt = ah(V)*(1 - h) - bh(V)*h;
+				dydt = [dVdt; dndt; dmdt; dhdt];
+				end
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}[fragile]{Script}
+		\begin{columns}[T]
+			\column{0.49\textwidth}
+			\begin{lstlisting}
+				% Script principal 
+				T = 30;
+				pas = 0.0001;
+				H = 0:pas:T;
+				y0 = [-65, 0.3177, 0.0529, 0.5961]'; % Conditions initiales
+				Y = [y0 zeros(4,length(H)-1)];
+				for i = 1:length(H)-1
+				Y(:,i+1) = Y(:,i) + pas 0*pas * HH(H(i), Y(:,i));
+				end
+				subplot(1,2,1)
+				plot(H, Y(1,:));
+				xlabel('Temps (ms)');
+				ylabel('V (mV)');
+				title('Potentiel membranaire');
+				grid on;
+			\end{lstlisting}
+			\column{0.49\textwidth}
+			\begin{lstlisting}
+				subplot(1,2,2)
+				hold on
+				a2=Y(2,:);
+				a3=Y(3,:);
+				a4=Y(4,:);
+				z = T/(pas*6);
+				plot(H(1:z), a2(1:z), 'r', 'DisplayName', 'n');
+				plot(H(1:z), a3(1:z), 'g', 'DisplayName', 'm');
+				plot(H(1:z), a4(1:z), 'b', 'DisplayName', 'h');
+				xlabel('Temps (ms)');
+				ylabel('Variables de porte');
+				title('n, m, h dans le modele de HH');
+				legend show
+				grid on;
+				hold off
+			\end{lstlisting}
+		\end{columns}
+	\end{frame}
+	\subsection{Résultats}
+	\begin{frame}{La solution - Méthode d'Euler}
+		\includegraphics[width=\linewidth]{pictures/simulation.png}
+	\end{frame}
+	\begin{frame}{La solution avec différentes Méthodes}
+		\includegraphics[width=\linewidth]{pictures/sumi-diff.png}
+		\cite{vander}
+	\end{frame}
+	\begin{frame}{Interprétation du graphe I}
+		Le graphique de gauche représente l’évolution du potentiel membranaire d’un neurone selon le modèle de Hodgkin-Huxley. On y observe deux potentiels d’action successifs, caractérisés par des pics d’activité électrique. Le potentiel débute à environ -65 mV, correspondant à l’état de repos de la membrane, puis monte rapidement vers +45 mV lors de la phase de dépolarisation. Ensuite, il chute en dessous du potentiel de repos (hyperpolarisation) avant de revenir à l’état initial. Chaque pic traduit une réponse du neurone à une stimulation suffisante, déclenchant un influx nerveux. Ce comportement résulte de l’activation coordonnée des canaux ioniques, et reflète précisément la dynamique électrique neuronale modélisée par les équations de Hodgkin-Huxley.
+	\end{frame}
+	\begin{frame}{Interprétation du graphe II}
+		Le graphique de droite illustre l’évolution des variables de porte \( m \), \( h \) et \( n \) dans le modèle de Hodgkin-Huxley, qui décrivent respectivement l’activation et l’inactivation des canaux sodiques, ainsi que l’activation des canaux potassiques. La variable \( m \) (courbe verte) augmente très rapidement dès le début de la stimulation, traduisant l’ouverture rapide des canaux sodium, ce qui permet l’entrée massive de $Na^{+}$ dans la cellule et provoque la dépolarisation de la membrane. Parallèlement, la variable \( h \) (courbe bleue) diminue progressivement, représentant l’inactivation des canaux sodium, processus qui contribue à l’arrêt du flux de $Na^{+}$ et à la fin du potentiel d’action. Quant à la variable \( n \) (courbe rouge), elle augmente plus lentement, reflétant l’ouverture progressive des canaux potassium, permettant la sortie de $K^{+}$ et participant ainsi à la repolarisation de la membrane, puis à l’hyperpolarisation. L’évolution de ces trois variables rend compte avec précision de la régulation ionique à l’origine du potentiel d’action neuronal.
+	\end{frame}
+\section{Conclusion}
+	
+	\begin{frame}{Conslusion}
+		L’étude des neurones, de leur membrane et des potentiels électriques qui les régissent s’appuie sur une modélisation précise. Le modèle de Hodgkin-Huxley décrit la dynamique des flux ioniques à l’origine de l’activité neuronale. Nos analyses et simulations ont mis en lumière la capacité de ce modèle à capturer les phénomènes biologiques complexes, offrant un cadre clair pour comprendre le fonctionnement du cerveau.
+		Le modèle que nous avons étudié, centré sur l’état stationnaire, n’est qu’une partie du travail de Hodgkin et Huxley.
+	\end{frame}
+	
+	\begin{frame}{Conslusion}
+		Dans leur travail fondamental de 1952, ils ont également étudié la propagation du courant le long de l’axone du neurone, en plus de décrire la dynamique des potentiels d’action au niveau de la membrane. Leur modèle complet inclut aussi la propagation spatiale et temporelle des signaux nerveux, en prenant en compte les variations dynamiques des courants ioniques, comme ceux du sodium et du potassium, pour modéliser la transmission des impulsions nerveuses.\\
+		Ces approches ouvrent la voie à une compréhension approfondie des réseaux neuronaux et de leurs applications, allant des neurosciences computationnelles aux systèmes intelligents.
+	\end{frame}
+	
+	\begin{frame}{Conslusion}
+		\begin{itemize}
+			\item \textbf{Modèles réalistes vs simplifiés} : Les modèles multi-compartimentaux et à conductance réaliste offrent une précision accrue pour simuler des neurones complexes, intégrant la géométrie dendritique et les dynamiques ioniques détaillées. À l’opposé, des modèles comme FitzHugh-Nagumo ou Morris-Lecar privilégient la simplicité théorique, facilitant l’analyse mathématique des comportements neuronaux fondamentaux.
+			\item \textbf{Wilson-Cowan vs Hodgkin-Huxley} : Le modèle de Wilson-Cowan excelle dans l’étude des dynamiques collectives de populations neuronales, capturant les oscillations corticales et les comportements à grande échelle. Plus abstrait que Hodgkin-Huxley, il se concentre sur les interactions excitateur-inhibiteur au niveau des réseaux, plutôt que sur les mécanismes cellulaires détaillés.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[allowframebreaks]
+		\frametitle{Références}
+		\bibliographystyle{plain}
+		\bibliography{references}
+	\end{frame}
+\end{document}

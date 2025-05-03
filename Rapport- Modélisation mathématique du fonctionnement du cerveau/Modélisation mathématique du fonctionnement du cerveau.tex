@@ -1,0 +1,279 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[francais]{babel}
+\usepackage[numbers]{natbib}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[many,skins]{tcolorbox}
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage[a4paper]{geometry}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage[makeroom]{cancel}
+\usepackage{calc}
+\usepackage{mathrsfs}
+\usepackage{textcomp}
+\usepackage{makeidx}
+\usepackage{amsfonts}
+\usepackage{siunitx}
+\usepackage{adjustbox}
+\usepackage{lipsum}
+\usepackage{setspace}
+\usepackage{enumerate}
+\usepackage{hhline}
+\usepackage{pict2e}
+\usepackage{fancyhdr}
+\usepackage[firstpage=true]{background}
+\usepackage{subfig}
+
+\geometry{verbose,tmargin=2.5cm,bmargin=2cm,lmargin=3cm,rmargin=2cm}
+\pagestyle{fancy}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\onehalfspacing
+\makeindex
+\sloppy
+
+\hypersetup{
+	urlcolor=blue,
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	unicode=true,
+	pdfusetitle,
+	bookmarks=true,
+	bookmarksnumbered=false,
+	bookmarksopen=false,
+	breaklinks=false,
+	pdfborder={0 0 1},
+	backref=false
+}
+
+\definecolor{main}{HTML}{5989cf}
+\definecolor{sub}{HTML}{cde4ff}
+
+\newtcolorbox{boxH}{
+	colback=green!10,
+	colframe=green!60!black,
+	boxrule=0pt,
+	leftrule=6pt
+}
+\newtcolorbox{boxR}{
+	colback=red!10,
+	colframe=red!90!black,
+	boxrule=0pt,
+	leftrule=6pt
+}
+\newtcolorbox{boxG}{
+	colback=green!10,
+	colframe=green!60!black,
+	boxrule=0pt,
+	leftrule=6pt
+}
+\newtcolorbox{boxO}{
+	colback=orange!10,
+	colframe=orange,
+	boxrule=0pt,
+	leftrule=6pt
+}
+
+\lstset{
+	language=Matlab,
+	basicstyle=\ttfamily\footnotesize,
+	keywordstyle=\bfseries\color{blue},
+	commentstyle=\itshape\color{green!50!black},
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	stepnumber=1,
+	breaklines=true,
+	tabsize=1,
+	frame=single,
+	showspaces=false,
+	showstringspaces=false,
+	inputencoding=utf8
+}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Théorème}[section]
+\newtheorem{definition}[theorem]{Définition}
+\newtheorem{corollaire}[theorem]{Corollaire}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remarque}[theorem]{Remarque}
+
+\providecommand{\LyX}{\texorpdfstring{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}{LyX}}
+\providecommand{\tabularnewline}{\\}
+
+\hyphenation{li-vrotes-techa-vebi-blio-te-ca}
+\hyphenation{co-men-t\'a-rio re-fe-r\^en-cia}
+
+\newcommand{\Cset}{\ensuremath{\mathbb{C}}}
+\newcommand{\Rset}{\ensuremath{\mathbb{R}}}
+\newcommand{\Qset}{\ensuremath{\mathbb{Q}}}
+\newcommand{\Iset}{\ensuremath{\mathbb{I}}}
+\newcommand{\Zset}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Nset}{\ensuremath{\mathbb{N}}}
+
+\DeclareMathOperator{\sen}{sen}
+\DeclareMathOperator{\senh}{senh}
+\DeclareMathOperator{\mdc}{mdc}
+\DeclareMathOperator{\mmc}{mmc}
+\DeclareMathOperator*{\mylim}{lim}
+
+\newenvironment{epigrafe}{\setbox\z@\vbox\bgroup}{\egroup}
+
+\makeatletter
+\renewcommand{\@makefntext}[1]{%
+	\parindent 1em%
+	\linespread{1}\@currsize\noindent
+	\hb@xt@0.45em{\hss\@makefnmark}#1}
+\makeatother
+
+\fancyhf{}
+\setlength{\headheight}{15.2pt}
+\setlength{\footskip}{0.3cm}
+\if@twoside
+\fancyhead[LE,RO]{\bfseries\thepage}
+\fancyhead[LO]{\bfseries\nouppercase\rightmark}
+\fancyhead[RE]{\bfseries\nouppercase\leftmark}
+\fancypagestyle{plain}{
+	\fancyhead{}
+	\fancyhead[LE,RO]{\bfseries\thepage}
+	\renewcommand{\headrulewidth}{0.5pt}
+}
+\else
+\fancyhead[R]{\bfseries\thepage}
+\fancyhead[L]{\bfseries\nouppercase\leftmark}
+\fancypagestyle{plain}{
+	\fancyhead{}
+	\fancyhead[R]{\bfseries\thepage}
+	\renewcommand{\headrulewidth}{0.5pt}
+}
+\fi
+\renewcommand{\headrulewidth}{0.5pt}
+\fancyfoot[R]{{\textcolor{blue}{Fonctionnement du Cerveau}}\\
+	\noindent\makebox[\linewidth]{\rule{\paperwidth}{0.4pt}}\\
+	{\textcolor{red}{Systèmes Dynamiques}}}
+
+\backgroundsetup{
+	contents={\includegraphics[trim=0 0.001cm 0 -5cm]{pictures/reseaudeneuronesfond.jpg}},
+	angle=0,
+	scale=2,
+	opacity=0.3
+}
+
+\begin{document}
+\newcommand{\nome}{Nome}
+\newcommand{\titulo}{titulo}
+\newcommand{\orientador}{Orientador}
+\newcommand{\ano}{2024}
+\begin{titlepage} 
+
+\begin{center}
+    \begin{minipage}[h]{0.2\paperwidth}
+      \includegraphics[scale=0.5]{pictures/fsdmlogo.png}
+    \end{minipage}
+    \begin{minipage}[h]{0.6\textwidth}
+    \centering
+      \textbf{UNIVERSITE SIDI MOHAMED BEN ABDELLAH DE FES } \\
+      \begin{minipage}[t]{1\textwidth}
+        \centering
+        \textbf{Faculté des Sciences Dhar El Mehraz}
+      \end{minipage}
+    \end{minipage}
+    \begin{minipage}[h]{0.05\textwidth}
+      \includegraphics[scale=0.2]{pictures/cerveaulogo.jpg}
+    \end{minipage}
+\end{center}
+	
+	\begin{center}
+ \phantom{a}
+		\vfill{}
+		{\Large{}Master Mathématiques Appliquées et Systèmes Intelligents (MASI)}{\Large\par}
+		\par\end{center}
+	
+	\begin{center}
+		\vfill{}
+  
+\vspace{10\baselineskip}
+		\noindent\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
+				\begin{center}
+					\begin{tabular}{c}
+                        \textbf{\Large \textcolor{red}{Projet}}\\
+						\textbf{\Huge \textcolor{blue}{Modélisation mathématique }}	
+						\tabularnewline
+						\textbf{\Huge \textcolor{blue}{du fonctionnement du cerveau }}
+						\tabularnewline
+						\tabularnewline
+						\begin{tabular}{ll}
+      \textbf{ Réalisé par :}\\
+     &\textcolor{violet}{Ismail ElFayk}\\
+                     &\textcolor{violet}{Ikram Chebbac}\\
+        \textbf{ Encadré par :}\\
+        &\textcolor{violet}{M. ElHoussine AZROUL}
+                      
+       \tabularnewline
+						\end{tabular}\tabularnewline
+						\tabularnewline
+						\begin{tabular}{l}
+							 \tabularnewline
+						\end{tabular}\tabularnewline
+					\end{tabular}
+					\par\end{center}%
+		\end{minipage}
+		\par\end{center}
+	
+	\begin{center}
+		\vfill{}
+		\vfill{}
+		\par\end{center}
+	
+	\begin{center}
+		Année Universitaire:2024-2025
+		\par\end{center}
+	
+\end{titlepage}
+
+\addto\captionsfrench{%
+  \renewcommand*{\contentsname}{Plan du document}%
+}
+
+\tableofcontents
+\newpage
+
+\listoffigures % Lista de Figuras
+
+
+%
+\include{capitulos/Introduction}
+%
+\include{capitulos/Du système nerveux au neurone}
+%
+\include{capitulos/Potentiels membranaires}
+%
+\include{capitulos/Modèle de Hodgkin-Huxley}
+%
+\include{capitulos/Analyse mathématique du modèle de Hodgkin-Huxley}
+%
+\include{capitulos/Analyse numérique et simulations}
+%
+\include{capitulos/Conclusion}
+
+\newpage
+
+\bibliographystyle{plainnat}
+\addcontentsline{toc}{section}{\textcolor{gray}{Références}}
+\bibliography{references}
+
+\end{document}

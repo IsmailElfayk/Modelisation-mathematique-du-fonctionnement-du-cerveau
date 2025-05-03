@@ -1,0 +1,234 @@
+\chapter{\textcolor{gray}{Modèle de Hodgkin-Huxley}}
+\section{Introduction au Modèle de Hodgkin-Huxley : \cite{jane1987mathematical}, \cite{gerstner2014neuronal}, \cite{koch1998biophysics}, \cite{bertram2000introduction}, \cite{ermentrout2010mathematical}, \cite{hodgkin1952quantitative}, \cite{nelson1995hodgkin}}
+
+Après avoir compris le rôle fondamental de la membrane neuronale dans la propagation du signal nerveux, il est naturel de se demander comment modéliser précisément ces phénomènes électrophysiologiques. C'est ici qu'intervient une analogie essentielle : celle du circuit électrique.
+
+En effet, la membrane plasmique du neurone, avec ses canaux ioniques spécifiques et sa capacité à accumuler des charges électriques, peut être représentée comme un circuit électrique. Cette représentation permet non seulement de mieux comprendre les flux ioniques qui génèrent les potentiels d'action, mais aussi de les quantifier à l'aide d'équations précises.
+
+C'est dans cette optique que les physiologistes britanniques Alan L. Hodgkin et Andrew F. Huxley ont développé en 1952 un modèle mathématique révolutionnaire, aujourd'hui connu sous le nom de modèle de Hodgkin-Huxley.
+Leur travail s'appuie sur une série d'expériences réalisées sur l'axone géant du calmar, un modèle idéal en raison de son diamètre inhabituellement large (jusqu'à 1 mm), facilitant les mesures intracellulaires à une époque où les instruments de mesure étaient encore rudimentaires. À l'aide de microélectrodes et d'un dispositif de voltage clamp (pince de tension), Hodgkin et Huxley ont pu mesurer, de manière indépendante, les courants ioniques à travers la membrane. Leurs données ont ensuite été traduites en équations, permettant de simuler pour la première fois la génération et la propagation d'un potentiel d'action de manière réaliste.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.55\linewidth]{pictures/hodgkin huxley photo1.png}
+	\caption{Alan HodgkinAlan Hodgkin (à droite) et Andrew Huxley (à gauche) dans leur laboratoire Marine Lab à Plymouth (Angleterre) en 1949.}
+\end{figure}
+
+
+Le modèle de Hodgkin-Huxley peut être compris à l'aide de la figure (4.1). La membrane cellulaire semi-perméable sépare l'intérieur de la cellule du liquide extracellulaire et agit comme un condensateur. Si un courant d'entrée $I(t)$ est injecté dans la cellule, il peut soit ajouter une charge supplémentaire sur le condensateur, soit fuir à travers les canaux de la membrane cellulaire. Chaque type de canal est représenté dans la figure (d'anatomie du neuron) par une résistance. Le canal non spécifique possède une résistance $R$, le canal sodique une résistance $R_{\text{Na}}$, et le canal potassique une résistance $R_K$. La flèche diagonale traversant le symbole de la résistance indique que la valeur de cette résistance n'est pas fixe, mais varie selon que le canal ionique est ouvert ou fermé.
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.45\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{pictures/membranecir}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{pictures/circuit} 
+	\end{minipage}
+	\caption{Schéma simplifié du modèle de Hodgkin-Huxley.}
+\end{figure}
+
+En raison du transport actif des ions à travers la membrane cellulaire, la concentration ionique à l'intérieur de la cellule est différente de celle dans le liquide extracellulaire. Le potentiel de Nernst généré par cette différence de concentration est représenté par une pile dans la figure (4.1). Comme le potentiel de Nernst est différent pour chaque type d'ion, il existe des piles séparées pour le sodium, le potassium et le troisième canal non spécifique, avec des tensions de pile respectives $E_{\text{Na}}$, $E_K$ et $E_L$.
+
+Traduisons maintenant ce schéma de circuit électrique en équations mathématiques. La conservation de la charge électrique sur un morceau de membrane implique que le courant appliqué $I(t)$ peut être réparti entre un courant capacitif $I_C$ qui charge le condensateur $C$, et d'autres composantes $I_k$ qui passent à travers les canaux ioniques. Ainsi :
+\[
+I(t) = I_C(t) + \sum_k I_k(t),
+\]
+où la somme est prise sur tous les canaux ioniques.
+
+Dans le modèle standard de Hodgkin–Huxley, il n'y a que trois types de canaux : un canal sodique (index $\text{Na}$), un canal potassique (index $K$) et un canal de fuite non spécifique avec une résistance $R$, comme illustré dans la figure (4.1). À partir de la définition de la capacité $C = \frac{q}{V}$, où $q$ est une charge et $V$ la tension aux bornes du condensateur, on obtient que le courant de charge est $I_C = C \frac{dV}{dt}$. On déduit donc de l'équation précédente :
+\[
+C \frac{dV}{dt} = -\sum_k I_k(t) + I(t).
+\]
+En termes biologiques, $V$ est la tension à travers la membrane, et $\sum_k I_k$ représente la somme des courants ioniques qui traversent la membrane cellulaire.
+
+Comme mentionné ci-dessus, le modèle de Hodgkin–Huxley décrit trois types de canaux. Tous les canaux peuvent être caractérisés par leur résistance ou, de manière équivalente, par leur conductance. Le canal de fuite est décrit par une conductance indépendante de la tension $G_L = \frac{1}{R}$. Puisque $V$ est la tension totale à travers la membrane cellulaire et $E_L$ la tension de la pile, la tension au niveau de la résistance de fuite dans la figure (4.1) est $V - E_L$. En utilisant la loi d'Ohm, on obtient un courant de fuite $I_L = G_L (V - E_L)$.
+Les constantes $\bar{G}_L$ et $E_L$ sont données par : 
+\begin{itemize}
+	\item $\bar{G}_L = 0.3 \, \text{mS}/\text{cm}^2$
+	\item $E_L = -10.5989 \, \text{mV}$ 
+\end{itemize}
+
+Les mathématiques des autres canaux ioniques sont analogues, sauf que leur conductance dépend de la tension et du temps. Si tous les canaux sont ouverts, ils transmettent des courants avec une conductance maximale $\bar{G}_{Na}$ ou $\bar{G}_K$, respectivement. Cependant, normalement, certains des canaux sont bloqués. 
+La percée de Hodgkin et Huxley a été de réussir à mesurer comment la résistance effective d'un canal varie en fonction du temps et de la tension. De plus, ils ont proposé une description mathématique de leurs observations. Plus précisément, ils ont introduit des variables supplémentaires de "basculement" $m$, $n$ et $h$ pour modéliser la probabilité qu'un canal soit ouvert à un moment donné.
+L'action combinée de $m$ et $h$ contrôle les canaux $Na^+$, tandis que les portes $K^+$ sont contrôlées par $n$. 
+
+\textbf{Les variables de basculement} (ou "gating variables") : 
+Les variables $m$, $n$, et $h$ modélisent la probabilité qu'un canal ionique soit ouvert à un instant donné. Ces variables sont des fonctions du temps et de la tension membranaire et déterminent la fraction des canaux ouverts à chaque instant.
+\begin{itemize}
+	\item[$m$ :] Modélise l'activation des canaux sodiques ($Na^+$). C'est une variable qui augmente avec la tension, indiquant qu'à des tensions plus positives, plus de canaux sodiques s'ouvrent.
+	\item[$h$ :] Modélise l'inactivation des canaux sodiques ($Na^+$). Cette variable diminue à mesure que la tension devient plus positive, représentant la fermeture des canaux sodiques à des tensions plus élevées.
+	\item[$n$ :] Modélise l'activation des canaux potassiques ($K^+$). Comme $m$, $n$ augmente avec la tension, mais pour les canaux $K^+$, qui s'ouvrent à des tensions plus positives.
+\end{itemize}
+
+\section{Courant potassique $I_K$}
+
+Hodgkin et Huxley (1952d) modélisent le courant potassique selon la relation suivante :
+\begin{equation}
+I_K = \bar{G}_K n^4 (V - E_K)
+\label{eq:1}
+\end{equation}
+où :
+\begin{itemize}
+	\item $\bar{G}_K = 36 \, \text{mS}/\text{cm}^2$ est la conductance maximale pour le potassium,
+	\item $E_K = 12 \, \text{mV}$ est le potentiel d'équilibre du potassium,
+	\item $n \in [0,1]$ est une variable sans dimension représentant l'état d'une particule d'activation fictive (proportion de particules).
+\end{itemize}
+Le terme $n^4$ signifie que quatre particules de gating doivent simultanément être en état \textit{ouvert} (permissive) pour que le canal laisse passer le courant, reflétant ainsi une dynamique coopérative.
+
+\subsection{Cinétique de transition des particules}
+
+On suppose que chaque particule peut être dans deux états : ouvert ou fermé. Les transitions suivent une cinétique du premier ordre :
+\begin{equation}
+n \underset{\alpha_n}{\overset{\beta_n}{\rightleftharpoons}} 1 - n
+\label{eq:2}
+\end{equation}
+où :
+\begin{itemize}
+	\item $\alpha_n(V)$ est le taux de transition (proportion de particules) de l'état fermé vers l'état ouvert,
+	\item $\beta_n(V)$ est le taux de transition inverse.
+\end{itemize}
+Cela conduit à l'équation différentielle suivante :
+\begin{equation}
+\frac{dn}{dt} = \alpha_n(V)(1 - n) - \beta_n(V) n
+\label{eq:3}
+\end{equation}
+
+Hodgkin et Huxley (1952d) ont proposé les approximations suivantes pour les constantes de taux :
+\begin{equation}
+\alpha_n(V) = \frac{10 - V}{100(e^{(10 - V)/10} - 1)}     \label{eq:4}
+\end{equation}
+\begin{equation}
+\beta_n(V) = 0.125e^{-V/80}     \label{eq:5}
+\end{equation}
+où $V$ est le potentiel de membrane relatif au potentiel de repos de l'axone, en millivolts.
+
+\section{Courant Sodique $I_{\text{Na}}$}
+
+Pour modéliser le comportement cinétique du courant sodique, \textbf{Hodgkin et Huxley} ont introduit deux particules de transition : une particule \textbf{d'activation} $m$ et une particule \textbf{d'inactivation} $h$. Le courant sodique est exprimé par la relation :
+\begin{equation}
+I_{\text{Na}} = \bar{G}_{\text{Na}} m^3 h (V - E_{\text{Na}})
+\label{eq:6}
+\end{equation}
+où :
+\begin{itemize}
+	\item $\bar{G}_{\text{Na}}$ est la conductance sodique maximale (120 mS/cm$^2$),
+	\item $E_{\text{Na}} = -115\, \text{mV}$ est le potentiel de renversement du sodium,
+	\item $V$ est le potentiel de membrane,
+	\item $m$ et $h$ sont des variables sans dimension, avec $0 \leq m,h \leq 1$.
+\end{itemize}
+
+Par convention, le courant sodique est \textbf{négatif} (entrant) pour $V < E_{\text{Na}}$. 
+Les particules $m$ et $h$ effectuent des transitions de premier ordre, indépendamment les unes des autres. La probabilité d'avoir trois particules $m$ et une $h$ en état ouvert est $m^3 h$. L'évolution temporelle de ces variables est décrite par deux équations différentielles :
+\begin{align}
+	\frac{dm}{dt} &= \alpha_m(V)(1 - m) - \beta_m(V) m \label{eq:7} \\
+	\frac{dh}{dt} &= \alpha_h(V)(1 - h) - \beta_h(V) h     \label{eq:8}
+\end{align}
+
+Les constantes de taux sont données empiriquement :
+\begin{align}
+	\alpha_m(V) &= \frac{25 - V}{10 \left( e^{(25 - V)/10} - 1 \right)} \label{eq:9} \\
+	\beta_m(V) &= 4 e^{-V/18} \label{eq:10} \\
+	\alpha_h(V) &= 0.07 e^{-V/20} \label{eq:11} \\
+	\beta_h(V) &= \frac{1}{e^{(30 - V)/10} + 1}     \label{eq:12}
+\end{align}
+
+\section{Modèle complet}
+
+On peut regrouper tous les courants circulant à travers un dans l'équation \eqref{eq:13} :
+\begin{align}
+	C_m \frac{dV}{dt} &= -\bar{G}_{\text{Na}}\, m^3 h (V - E_{\text{Na}})
+	-\bar{G}_{\text{K}}\, n^4 (V - E_{\text{K}})
+	-\bar{G}_{\text{L}}\, (V - E_{\text{L}})
+	+ I_{\text{ext}} 
+	\label{eq:13} \\
+	\frac{dm}{dt} &= \alpha_m(V)(1 - m) - \beta_m(V) m \label{eq:14}\\
+	\frac{dh}{dt} &= \alpha_h(V)(1 - h) - \beta_h(V) h \label{eq:15}\\
+	\frac{dn}{dt} &= \alpha_n(V)(1 - n) - \beta_n(V) n \label{eq:16}
+\end{align}
+où $I_{\text{ext}}$ est le courant injecté via une électrode intracellulaire.
+
+\section{États d'équilibre du modèle de Hodgkin-Huxley}
+
+Pour déterminer les \textbf{états d'équilibre} (ou points fixes) du modèle de Hodgkin-Huxley, nous cherchons les valeurs des variables d'état \( V \), \( m \), \( h \), et \( n \) pour lesquelles toutes les dérivées temporelles sont nulles :
+\[
+\frac{dV}{dt} = 0, \quad \frac{dm}{dt} = 0, \quad \frac{dh}{dt} = 0, \quad \frac{dn}{dt} = 0.
+\]
+\subsection{Conditions d'équilibre}
+À l'équilibre, toutes les dérivées sont nulles, ce qui donne :
+\begin{align*}
+	0 &= -\bar{G}_{Na} m^3 h (V - E_{Na}) - \bar{G}_K n^4 (V - E_K) - \bar{G}_L (V - E_L) + I_{ext}, \\
+	0 &= \alpha_m(V) (1 - m) - \beta_m(V) m, \\
+	0 &= \alpha_h(V) (1 - h) - \beta_h(V) h, \\
+	0 &= \alpha_n(V) (1 - n) - \beta_n(V) n.
+\end{align*}
+
+\subsection{Variables de porte à l'équilibre}
+Pour chaque variable \( x = m, h, n \), la condition d'équilibre est :
+\[
+\alpha_x(V) (1 - x) = \beta_x(V) x.
+\]
+En réarrangeant :
+\[
+x = \frac{\alpha_x(V)}{\alpha_x(V) + \beta_x(V)}.
+\]
+Ainsi, les valeurs à l'équilibre sont :
+\begin{align*}
+	m_\infty(V) &= \frac{\alpha_m(V)}{\alpha_m(V) + \beta_m(V)}, \\
+	h_\infty(V) &= \frac{\alpha_h(V)}{\alpha_h(V) + \beta_h(V)}, \\
+	n_\infty(V) &= \frac{\alpha_n(V)}{\alpha_n(V) + \beta_n(V)}.
+\end{align*}
+
+\subsection{Taux de transition}
+\small
+Les taux de transition sont donnés par :
+\begin{itemize}
+	\item Pour \( m \) :
+	\[
+	\alpha_m(V) = \frac{0.1 (V + 40)}{1 - \exp(-(V + 40)/10)}, \quad \beta_m(V) = 4 \exp(-(V + 65)/18).
+	\]
+	\item Pour \( h \) :
+	\[
+	\alpha_h(V) = 0.07 \exp(-(V + 65)/20), \quad \beta_h(V) = \frac{1}{1 + \exp(-(V + 35)/10)}.
+	\]
+	\item Pour \( n \) :
+	\[
+	\alpha_n(V) = \frac{0.01 (V + 55)}{1 - \exp(-(V + 55)/10)}, \quad \beta_n(V) = 0.125 \exp(-(V + 65)/80).
+	\]
+\end{itemize}
+
+\subsection{Équation du potentiel à l'équilibre}
+\small
+Substituons \( m = m_\infty(V) \), \( h = h_\infty(V) \), et \( n = n_\infty(V) \) dans l'équation du potentiel :
+\[
+0 = -\bar{G}_{Na} [m_\infty(V)]^3 h_\infty(V) (V - E_{Na}) - \bar{G}_K [n_\infty(V)]^4 (V - E_K) - \bar{G}_L (V - E_L) + I_{ext}.
+\]
+Définissons la fonction :
+\[
+f(V) = \bar{G}_{Na} [m_\infty(V)]^3 h_\infty(V) (V - E_{Na}) + \bar{G}_K [n_\infty(V)]^4 (V - E_K) + \bar{G}_L (V - E_L) - I_{ext}.
+\]
+Les points fixes sont les solutions de :
+\[
+f(V) = 0.
+\]
+
+\textbf{\textit{Paramètres standards :}}\\
+Utilisons les paramètres standards pour l'axone géant de calmar :
+\begin{itemize}
+	\item \( \bar{G}_{Na} = 120 \, \text{mS/cm}^2 \), \( E_{Na} = 50 \, \text{mV} \),
+	\item \( \bar{G}_K = 36 \, \text{mS/cm}^2 \), \( E_K = -77 \, \text{mV} \),
+	\item \( \bar{G}_L = 0.3 \, \text{mS/cm}^2 \), \( E_L = -54.4 \, \text{mV} \),
+	\item \( C_m = 1 \, \mu\text{F/cm}^2 \) (non utilisé ici, car \( \frac{dV}{dt} = 0 \)).
+\end{itemize}
+En général, on fixe \( I_{ext} = 0 \, \mu\text{A/cm}^2 \) pour déterminer le potentiel de repos.
+
+\textbf{\textit{Résolution numérique :}}\\
+Résoudre \( f(V) = 0 \) analytiquement est complexe en raison de sa non-linéarité. Numériquement, on peut utiliser une méthode comme Newton-Raphson ou un solveur (par exemple, \texttt{scipy.optimize.root} en Python) avec une estimation initiale de \( V \approx -65 \, \text{mV} \). Pour \( I_{ext} = 0 \), la solution est approximativement :
+\[
+V \approx -65 \, \text{mV}, \quad m_\infty \approx 0.05, \quad h_\infty \approx 0.6, \quad n_\infty \approx 0.32.
+\]
+Alternativement, on peut tracer \( f \) pour \( V \in [-100, 50] \, \text{mV} \) afin d'identifier visuellement les zéros.
+
+Ce point fixe correspond à l'état de repos du neurone, où les courants ioniques s'équilibrent. Une perturbation suffisante (par exemple, via \( I_{ext} \) ou une variation de \( V \)) peut éloigner le système de cet équilibre, déclenchant un potentiel d'action.
